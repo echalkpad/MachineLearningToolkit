@@ -4,43 +4,43 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import com.ubhave.mltoolkit.utils.DataSet;
 import com.ubhave.mltoolkit.utils.Feature;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
+import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
 public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 	private static final long serialVersionUID = 6727156425109236600L;
-		
-	private DataSet d_dataSet;
-	
+
 	private HashMap<String, HashMap<String, double[]>> d_valueCounts;
 
 	private double[] d_classCounts;
 	
 	private boolean d_LaplaceSmoothing;
 	
-	public NaiveBayes(DataSet a_dataSet) {
-		initialize(a_dataSet);
+	
+	public NaiveBayes(Signature a_signature) {
+		super(a_signature);
+		initialize();
 	}
 	
-	public NaiveBayes(DataSet a_dataSet, boolean a_Laplace) {
-		this(a_dataSet);
+	public NaiveBayes(Signature a_signature, boolean a_Laplace) {
+		this(a_signature);
 		d_LaplaceSmoothing = a_Laplace;
 	}
 	
-	public void initialize(DataSet a_dataSet) {
-		d_dataSet = a_dataSet;
+	public void initialize() {
+		
 		d_valueCounts = new HashMap<String, HashMap<String, double[]>>();
-		ArrayList<Feature> features = d_dataSet.getFeatures();
-		Feature classFeature = d_dataSet.getClassFeature(); 
+		ArrayList<Feature> features = d_signature.getFeatures();
+		Feature classFeature = d_signature.getClassFeature(); 
 		ArrayList<String> classValues = classFeature.getValues();
 
 		d_classCounts = new double[classFeature.numberOfCategories()];	
 		Arrays.fill(d_classCounts, 0.0);
-				
+
 		for(Feature feature : features){			
 			HashMap<String, double[]> featureCount = new HashMap<String, double[]>();
 		
@@ -62,13 +62,13 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 	public void update(Instance a_instance) throws MLException {
 		
-		if (!d_dataSet.checkInstanceCompliance(a_instance)){
+		if (!d_signature.checkInstanceCompliance(a_instance)){
 			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 					"Instance is not compatible with the dataset used for classifier construction.");					
 		}
 
-		Feature classFeature = d_dataSet.getClassFeature();
-		Value classValue = a_instance.getValueAtIndex(d_dataSet.getClassIndex());
+		Feature classFeature = d_signature.getClassFeature();
+		Value classValue = a_instance.getValueAtIndex(d_signature.getClassIndex());
 		if (classValue.getValueType() == Value.MISSING_VALUE){
 			//TODO: no class specified
 			return;
@@ -82,7 +82,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		d_classCounts[classValueInt] += 1;
 		
 		for (int i=0; i<a_instance.size(); i++){
-			double[] classFeatureCounts = (d_valueCounts.get(d_dataSet.getFeatureAtIndex(i).name()))
+			double[] classFeatureCounts = (d_valueCounts.get(d_signature.getFeatureAtIndex(i).name()))
 					.get(classFeature.categoryOfIndex(classValueInt));
 			Value featureValue = a_instance.getValueAtIndex(i);
 			
@@ -108,8 +108,8 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 	
 	
 	public double[] getDistribution(Instance a_instance) {
-		ArrayList<Feature> features = d_dataSet.getFeatures();
-		Feature classFeature = d_dataSet.getClassFeature(); 
+		ArrayList<Feature> features = d_signature.getFeatures();
+		Feature classFeature = d_signature.getClassFeature(); 
 		ArrayList<String> classValues = classFeature.getValues();
 		double[] classPriors = new double[classValues.size()];
 		double[] classPosteriors = new double[classValues.size()];
@@ -120,11 +120,11 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		
 		for (int i=0; i<a_instance.size(); i++){
 			Value featureValue = a_instance.getValueAtIndex(i);
-			Feature feature = d_dataSet.getFeatureAtIndex(i);
+			Feature feature = d_signature.getFeatureAtIndex(i);
 			// for every feature (a specific value of it) we get a prob of each class
 			double[] classFeatureProbs = new double[classValues.size()];
 			
-			HashMap<String, double[]> featureCounts = d_valueCounts.get(d_dataSet.getFeatureAtIndex(i).name());
+			HashMap<String, double[]> featureCounts = d_valueCounts.get(d_signature.getFeatureAtIndex(i).name());
 
 			// Assume NOMINAL for now			
 			for (String classValue : classValues){
@@ -158,7 +158,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 			}
 		}
 		
-		Value maxClass = new Value(d_dataSet.getClassFeature().categoryOfIndex(maxAposterioriIndex), 
+		Value maxClass = new Value(d_signature.getClassFeature().categoryOfIndex(maxAposterioriIndex), 
 				Value.NOMINAL_VALUE);
 		return maxClass;
 	}

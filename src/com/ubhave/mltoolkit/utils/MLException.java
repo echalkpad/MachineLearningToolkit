@@ -6,6 +6,8 @@ public class MLException extends Exception {
 
 	public static final int INCOMPATIBLE_FEATURE_TYPE = 0;
 	public static final int INCOMPATIBLE_INSTANCE = 0;
+	public static final int INVALID_PARAMETER = 0;
+	public static final int INVALID_STATE = 0;
 	
 	private int errorCode;
 	private String message;

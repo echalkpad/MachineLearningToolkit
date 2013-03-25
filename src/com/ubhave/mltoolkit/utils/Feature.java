@@ -37,6 +37,18 @@ public class Feature {
  		for(int i=0;i<fvalues.length;i++) d_categoryIndex.put(fvalues[i], Integer.valueOf(i));
 	}
 	
+	public Feature(String fname, int ftype, ArrayList<String> fvalues) throws MLException{
+		if (ftype == NUMERIC){
+			throw new MLException(MLException.INCOMPATIBLE_FEATURE_TYPE,
+					"Numeric features do not need a list of possible categories;" +
+					" use Feature(String, int) instead."); 
+		}
+		d_type = ftype;
+		d_name = fname;
+		d_categories = (ArrayList<String>) fvalues.clone();
+ 		for(int i=0;i<fvalues.size();i++) d_categoryIndex.put(fvalues.get(i), Integer.valueOf(i));
+	}
+	
 	public int getFeatureType(){
 		return d_type;
 	}
