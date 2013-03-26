@@ -1,13 +1,16 @@
 package com.ubhave.mltoolkit.utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Signature {
-	
+public class Signature implements Serializable {
+
+	private static final long serialVersionUID = -2811754334808693579L;
+
 	private ArrayList<Feature> d_features;
 	
 	private int d_classIndex;		
-	
+
 	public Signature(ArrayList<Feature> a_features, int a_classIndex){
 		d_features = a_features;
 		d_classIndex = a_classIndex;

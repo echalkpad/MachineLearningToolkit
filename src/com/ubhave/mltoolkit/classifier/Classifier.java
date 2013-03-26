@@ -1,6 +1,7 @@
 package com.ubhave.mltoolkit.classifier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.Instance;
@@ -18,7 +19,7 @@ public abstract class Classifier implements Serializable {
 		d_signature = a_signature;
 	}
 	
-	public abstract void train(Instance[] instances) throws MLException;
+	public abstract void train(ArrayList<Instance> instances) throws MLException;
 
 	public abstract Value classify(Instance instance);
 

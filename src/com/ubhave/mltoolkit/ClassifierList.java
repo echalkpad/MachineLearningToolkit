@@ -1,5 +1,6 @@
 package com.ubhave.mltoolkit;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import com.ubhave.mltoolkit.classifier.Classifier;
@@ -14,23 +15,30 @@ import android.util.SparseArray;
 
 /**
  * Takes care of classifier instantiation and registration.
+ * Every classifier that's created has a radom int ID and 
+ * an optional string name. 
  * 
  * @author Veljko Pejovic (v.pejovic@cs.bham.ac.uk)
  *
  */
 public class ClassifierList {
-	private final SparseArray<Classifier> d_classifierList;
+	
+	private final SparseArray<Classifier> d_classifierMap;
+	
+	private HashMap<String, Integer> d_namedClassifiers;
+
 	private final Random d_keyGenerator;
 	
 	public ClassifierList(){
-		d_classifierList = new SparseArray<Classifier>();
-		d_keyGenerator = new Random();
+		d_classifierMap = new SparseArray<Classifier>();
+		d_namedClassifiers = new HashMap<String, Integer>();
+		d_keyGenerator = new Random();	
 	}
 	
-	public static Classifier createClassifier(int a_type, Signature a_signature){
+	private static Classifier createClassifier(int a_type, Signature a_signature){
 		switch (a_type) {
 			case Constants.TYPE_NAIVE_BAYES:
-				return new NaiveBayes(a_signature);				
+				return new NaiveBayes(a_signature);
 			default:
 				return new NaiveBayes(a_signature);		
 		}
@@ -38,32 +46,33 @@ public class ClassifierList {
 	
 	public void removeClassifier(int a_classifierID)
 	{
-		Classifier c = d_classifierList.get(a_classifierID);
+		Classifier c = d_classifierMap.get(a_classifierID);
 		if (c != null)
 		{
 			c.kill();
-			d_classifierList.delete(a_classifierID);
+			d_classifierMap.delete(a_classifierID);
 		}
 	}
 
 	public Classifier getClassifier(int a_classifierID)
 	{
-		return d_classifierList.get(a_classifierID);
+		return d_classifierMap.get(a_classifierID);
 	}
 
 	
-	public synchronized int addClassifier(Classifier a_classifier) throws MLException{
+	public synchronized int addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
+		Classifier classifier = createClassifier(a_type, a_signature);
 		int classifierID = randomKey();
-		d_classifierList.append(classifierID, a_classifier);
+		d_classifierMap.append(classifierID, classifier);
+		d_namedClassifiers.put(a_name, classifierID);
 		return classifierID;
-		
 	}
 	
 	private int randomKey() throws MLException
 	{
 		int classifierID = d_keyGenerator.nextInt();
 		int loopCount = 0;
-		while (d_classifierList.get(classifierID) != null)
+		while (d_classifierMap.get(classifierID) != null)
 		{
 			if (loopCount > 1000)
 			{

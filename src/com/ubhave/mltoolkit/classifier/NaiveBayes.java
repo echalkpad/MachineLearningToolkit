@@ -99,7 +99,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 	
 	@Override
-	public void train(Instance[] a_instances) throws MLException {
+	public void train(ArrayList<Instance> a_instances) throws MLException {
 		
 		for(Instance a_instance : a_instances){
 			this.update(a_instance);

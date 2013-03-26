@@ -34,6 +34,7 @@ public class Feature {
 		d_type = ftype;
 		d_name = fname;
 		d_categories = new ArrayList<String>(Arrays.asList(fvalues));
+		d_categoryIndex = new HashMap<String, Integer>();
  		for(int i=0;i<fvalues.length;i++) d_categoryIndex.put(fvalues[i], Integer.valueOf(i));
 	}
 	
@@ -46,6 +47,8 @@ public class Feature {
 		d_type = ftype;
 		d_name = fname;
 		d_categories = (ArrayList<String>) fvalues.clone();
+		d_categoryIndex = new HashMap<String, Integer>();
+
  		for(int i=0;i<fvalues.size();i++) d_categoryIndex.put(fvalues.get(i), Integer.valueOf(i));
 	}
 	

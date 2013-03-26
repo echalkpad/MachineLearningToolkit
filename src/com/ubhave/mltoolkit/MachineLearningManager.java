@@ -1,5 +1,7 @@
 package com.ubhave.mltoolkit;
 
+import java.util.HashMap;
+
 import com.ubhave.mltoolkit.classifier.Classifier;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
@@ -27,7 +29,7 @@ public class MachineLearningManager {
 	private static MachineLearningManager d_manager;
 	
 	private final ClassifierList d_classifiers;
-
+	
 	private static Object d_lock = new Object();
 	
 	private final Context d_context;
@@ -55,9 +57,8 @@ public class MachineLearningManager {
 		d_classifiers = new ClassifierList();
 	}
 	
-	public int addClassifier(int a_type, Signature a_signature) throws MLException{
-		Classifier classifier = ClassifierList.createClassifier(a_type, a_signature);
-		return d_classifiers.addClassifier(classifier);
+	public int addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
+		return d_classifiers.addClassifier(a_type, a_signature, a_name);
 	}
 	
 	public void removeClassifier(int a_classifierID){
