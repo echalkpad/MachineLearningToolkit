@@ -1,14 +1,19 @@
 package com.ubhave.mltoolkit.utils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Signature implements Serializable {
+import android.util.Log;
 
-	private static final long serialVersionUID = -2811754334808693579L;
+import com.google.gson.annotations.SerializedName;
 
+public class Signature {
+
+	private static final String TAG = "Signature";
+	
+    @SerializedName("features")
 	private ArrayList<Feature> d_features;
 	
+    @SerializedName("class_index")
 	private int d_classIndex;		
 
 	public Signature(ArrayList<Feature> a_features, int a_classIndex){
@@ -37,14 +42,20 @@ public class Signature implements Serializable {
 	}
 	
 	public ArrayList<Feature> getFeatures(){
-		return new ArrayList<Feature>();
+		return d_features;
 	}
 	
 	public boolean checkInstanceCompliance(Instance a_instance) {
+		Log.d(TAG, "checkInstanceCompliance");
+		Log.d(TAG, "size instance: "+a_instance.size()+" size features: "+this.getFeatures().size());
+		
 		if (a_instance.size() != this.getFeatures().size()){
 			return false;
 		}
+		
 		for (int i=0; i<a_instance.size(); i++){
+			Log.d(TAG, "instance type: "+a_instance.getValueAtIndex(i).getValueType()+" feature type: "+this.getFeatureAtIndex(i).getFeatureType());
+			
 			if (this.getFeatureAtIndex(i).getFeatureType() != a_instance.getValueAtIndex(i).getValueType()
 					&& (a_instance.getValueAtIndex(i).getValueType() != Value.MISSING_VALUE)){
 				return false;

@@ -3,6 +3,9 @@ package com.ubhave.mltoolkit;
 import java.util.HashMap;
 import java.util.Random;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
 import com.ubhave.mltoolkit.classifier.Classifier;
 import com.ubhave.mltoolkit.classifier.NaiveBayes;
 import com.ubhave.mltoolkit.utils.Constants;
@@ -11,39 +14,73 @@ import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
+import android.nfc.Tag;
+import android.util.Log;
 import android.util.SparseArray;
 
 /**
  * Takes care of classifier instantiation and registration.
- * Every classifier that's created has a radom int ID and 
- * an optional string name. 
+ * Every classifier that's created has a unique name. 
  * 
  * @author Veljko Pejovic (v.pejovic@cs.bham.ac.uk)
  *
  */
 public class ClassifierList {
 	
-	private final SparseArray<Classifier> d_classifierMap;
-	
-	private HashMap<String, Integer> d_namedClassifiers;
+   /* @SerializedName("classifier_map")	
+	private final SparseArray<Classifier> d_classifierMap;*/
 
-	private final Random d_keyGenerator;
+	private static final String TAG = "ClassifierList";
+	
+    @SerializedName("named_classifiers")
+	private HashMap<String, Classifier> d_namedClassifiers;
+
+	private transient final Random d_keyGenerator;
 	
 	public ClassifierList(){
-		d_classifierMap = new SparseArray<Classifier>();
-		d_namedClassifiers = new HashMap<String, Integer>();
+		//d_classifierMap = new SparseArray<Classifier>();
+		d_namedClassifiers = new HashMap<String, Classifier>();
 		d_keyGenerator = new Random();	
 	}
 	
 	private static Classifier createClassifier(int a_type, Signature a_signature){
+		
+		Log.d(TAG, "createClassifier");
+
 		switch (a_type) {
 			case Constants.TYPE_NAIVE_BAYES:
-				return new NaiveBayes(a_signature);
+				Log.d(TAG, "createNaiveBayes");
+				// TODO we use laplace smoothing here
+				return new NaiveBayes(a_signature, true);
 			default:
+				Log.d(TAG, "createDefault");
 				return new NaiveBayes(a_signature);		
 		}
 	}
+
+	public void removeClassifier(String a_classifierID)
+	{
+		
+		if (d_namedClassifiers.containsKey(a_classifierID))
+		{
+			d_namedClassifiers.remove(a_classifierID);
+			//c.kill();			
+			//d_classifierMap.delete(a_classifierID);
+		}
+	}
+
+	public Classifier getClassifier(String a_classifierID)
+	{
+		if (d_namedClassifiers.containsKey(a_classifierID)) {
+			return d_namedClassifiers.get(a_classifierID);
+		} else {
+			return null;
+		}
+			
+		//return d_classifierMap.get(a_classifierID);
+	}
 	
+	/*
 	public void removeClassifier(int a_classifierID)
 	{
 		Classifier c = d_classifierMap.get(a_classifierID);
@@ -58,16 +95,18 @@ public class ClassifierList {
 	{
 		return d_classifierMap.get(a_classifierID);
 	}
-
+	*/
 	
-	public synchronized int addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
+	public synchronized Classifier addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
+		Log.d(TAG, "addClassifier");
 		Classifier classifier = createClassifier(a_type, a_signature);
-		int classifierID = randomKey();
-		d_classifierMap.append(classifierID, classifier);
-		d_namedClassifiers.put(a_name, classifierID);
-		return classifierID;
+		//int classifierID = randomKey();
+		//d_classifierMap.append(classifierID, classifier);
+		d_namedClassifiers.put(a_name, classifier);
+		return classifier;
 	}
 	
+	/*
 	private int randomKey() throws MLException
 	{
 		int classifierID = d_keyGenerator.nextInt();
@@ -82,5 +121,5 @@ public class ClassifierList {
 			loopCount++;
 		}
 		return classifierID;
-	}
+	}*/
 }

@@ -4,15 +4,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import com.google.gson.annotations.SerializedName;
+
 
 public class Feature {
 	
 	public static final int NOMINAL = 0;
+	
 	public static final int NUMERIC = 1;
 	
+	@SerializedName("feature_type")
 	private int d_type;
+	
+	@SerializedName("feature_name")
 	private String d_name;
+	
+	@SerializedName("feature_categories")
     private ArrayList<String> d_categories;
+	
+	@SerializedName("feature_category_index")
     private HashMap<String,Integer> d_categoryIndex;
     
 	public Feature(String fname, int ftype) throws MLException{

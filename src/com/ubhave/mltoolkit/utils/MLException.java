@@ -4,10 +4,12 @@ public class MLException extends Exception {
 
 	private static final long serialVersionUID = -5918433829252926042L;
 
-	public static final int INCOMPATIBLE_FEATURE_TYPE = 0;
-	public static final int INCOMPATIBLE_INSTANCE = 0;
-	public static final int INVALID_PARAMETER = 0;
-	public static final int INVALID_STATE = 0;
+	public static final int INCOMPATIBLE_FEATURE_TYPE = 100;
+	public static final int INCOMPATIBLE_INSTANCE = 101;
+	public static final int INVALID_PARAMETER = 102;
+	public static final int INVALID_STATE = 103;
+	
+	public static final int CLASSIFIER_EXISTS = 200;
 	
 	private int errorCode;
 	private String message;

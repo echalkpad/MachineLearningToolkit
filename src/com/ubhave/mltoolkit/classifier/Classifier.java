@@ -1,19 +1,17 @@
 package com.ubhave.mltoolkit.classifier;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.ubhave.mltoolkit.utils.Constants;
+import com.google.gson.annotations.SerializedName;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
-public abstract class Classifier implements Serializable {
+public abstract class Classifier {
 	
+    @SerializedName("signature")
 	protected Signature d_signature;
-	
-	private static final long serialVersionUID = 1998880384642330312L;
 	
 	public Classifier(Signature a_signature) {
 		d_signature = a_signature;
@@ -22,10 +20,5 @@ public abstract class Classifier implements Serializable {
 	public abstract void train(ArrayList<Instance> instances) throws MLException;
 
 	public abstract Value classify(Instance instance);
-
-	public void kill() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
