@@ -2,13 +2,6 @@ package com.ubhave.mltoolkit.utils;
 
 import java.util.ArrayList;
 
-
-/**
- * 
- * @author Veljko Pejovic (v.pejovic@cs.bham.ac.uk)
- *
- */
-
 public class Instance {
 
 	private ArrayList<Value> d_values;

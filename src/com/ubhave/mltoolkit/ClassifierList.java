@@ -22,8 +22,6 @@ import android.util.SparseArray;
 /**
  * Takes care of classifier instantiation and registration.
  * Every classifier that's created has a unique name. 
- * 
- * @author Veljko Pejovic (v.pejovic@cs.bham.ac.uk)
  *
  */
 public class ClassifierList {

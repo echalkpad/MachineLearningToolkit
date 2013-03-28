@@ -2,8 +2,6 @@ package com.ubhave.mltoolkit.utils;
 
 public class MLException extends Exception {
 
-	private static final long serialVersionUID = -5918433829252926042L;
-
 	public static final int INCOMPATIBLE_FEATURE_TYPE = 100;
 	public static final int INCOMPATIBLE_INSTANCE = 101;
 	public static final int INVALID_PARAMETER = 102;
