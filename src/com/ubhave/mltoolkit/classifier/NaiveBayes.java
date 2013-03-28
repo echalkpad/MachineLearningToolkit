@@ -19,12 +19,17 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 	
 	private static Object d_lock = new Object();
 	
+	// For each feature we hold the count of occurrences of every class variable value.
+	// These are further bisected to the feature values in case of NOMINAL features.
+	// For NUMERIC features we keep stats necessary for Gaussian distribution calculation.
     @SerializedName("value_counts")
 	private HashMap<String, HashMap<String, double[]>> d_valueCounts;
 
+    // Holds the number of occurrences of each value that the class variable may take.
     @SerializedName("class_counts")
 	private double[] d_classCounts;
 	
+    // Fixes the problem of too few occurrences in certain bins.
     @SerializedName("laplace_smoothing")
 	private boolean d_LaplaceSmoothing;
 	
@@ -89,11 +94,8 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		
 		Value classValue = a_instance.getValueAtIndex(d_signature.getClassIndex());
 		
-		if (classValue.getValueType() == Value.MISSING_VALUE){
-			//TODO: no class specified
-			return;
-		}
-		if (classValue.getValueType() == Value.NUMERIC_VALUE){
+		if (classValue.getValueType() == Value.NUMERIC_VALUE &&
+				classValue.getValueType() == Value.MISSING_VALUE){
 			throw new MLException(MLException.INCOMPATIBLE_FEATURE_TYPE, 
 					"Class variable has to be of type NOMINAL.");
 		}
@@ -179,15 +181,12 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 					}
 					
 					Log.d(TAG, "Feature value: "+((Float)featureValue.getValue()).toString());
-					// In case we haven't trained for large values we need to cap this.
 					
-					// TODO: check if this is OK for nominal, perhaps we need to do reverse lookup
-					int featureValueIndex = (Integer)featureValue.getValue();					
+					int featureValueIndex = feature.indexOfCategory((String) featureValue.getValue());						
 					
 					Log.d(TAG, "Feature value index: "+featureValueIndex);
 							
 					if (d_LaplaceSmoothing){
-						// TODO: fix this for numerical features!
 						classFeatureProbs[indexOfClassValue]=classFeatureCounts[featureValueIndex]+1/
 								(classFeatureTotal + feature.numberOfCategories());					
 					}

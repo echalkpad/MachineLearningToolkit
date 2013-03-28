@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import com.ubhave.mltoolkit.classifier.Classifier;
 import com.ubhave.mltoolkit.classifier.NaiveBayes;
+import com.ubhave.mltoolkit.classifier.ZeroR;
 import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
@@ -49,9 +50,12 @@ public class ClassifierList {
 
 		switch (a_type) {
 			case Constants.TYPE_NAIVE_BAYES:
-				Log.d(TAG, "createNaiveBayes");
+				Log.d(TAG, "create NaiveBayes");
 				// TODO we use laplace smoothing here
 				return new NaiveBayes(a_signature, true);
+			case Constants.TYPE_ZERO_R:
+				Log.d(TAG, "create ZeroR");
+				return new ZeroR(a_signature);
 			default:
 				Log.d(TAG, "createDefault");
 				return new NaiveBayes(a_signature);		
