@@ -1,6 +1,7 @@
 package com.ubhave.mltoolkit.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.util.Log;
 
@@ -13,12 +14,18 @@ public class Signature {
     @SerializedName("features")
 	private ArrayList<Feature> d_features;
 	
+    private HashMap<String, Feature> d_namesFeatures;
+    
     @SerializedName("class_index")
 	private int d_classIndex;		
 
 	public Signature(ArrayList<Feature> a_features, int a_classIndex){
+		d_namesFeatures = new HashMap<String, Feature>();
 		d_features = a_features;
 		d_classIndex = a_classIndex;
+		for (Feature f : a_features) {
+			d_namesFeatures.put(f.name(), f);
+		}
 	}
 	
 	public Signature(ArrayList<Feature> a_features){

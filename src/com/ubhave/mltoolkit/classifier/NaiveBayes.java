@@ -13,6 +13,9 @@ import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
+// TODO: check if there is a distinction between the class feature and other features
+// Do we need such a distinction?
+
 public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 	private static final String TAG = "NaiveBayes";
