@@ -156,7 +156,11 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		int classCountsTotal = 0;
 		for (int j=0; j<d_classCounts.length; j++) classCountsTotal += d_classCounts[j];
 		for (int j=0; j<classPriors.length; j++) {
-			classPriors[j] = d_classCounts[j]/classCountsTotal;
+			if (classCountsTotal == 0) {
+				classPriors[j] = 1.0/classPriors.length; 
+			} else {
+				classPriors[j] = d_classCounts[j]/classCountsTotal;
+			}
 			classPosteriors[j] = classPriors[j];
 			Log.d(TAG, "Class priors: "+classPriors[j]);
 		}
@@ -239,6 +243,11 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 					maxAposteriori = classDistribution[i];
 					maxAposterioriIndex = i;
 				}
+			}
+			
+			// When the classifier is not yet trained we return the first class value
+			if (maxAposterioriIndex == -1) {
+				maxAposterioriIndex = 0;
 			}
 			
 			Value maxClass = new Value(d_signature.getClassFeature().categoryOfIndex(maxAposterioriIndex), 
