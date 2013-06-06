@@ -10,7 +10,6 @@ import com.ubhave.mltoolkit.utils.Value;
 
 public abstract class Classifier {
 	
-    @SerializedName("signature")
 	protected Signature d_signature;
 	
 	public Classifier(Signature a_signature) {

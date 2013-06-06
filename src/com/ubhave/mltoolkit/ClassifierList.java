@@ -25,16 +25,12 @@ import android.util.SparseArray;
  *
  */
 public class ClassifierList {
-	
-   /* @SerializedName("classifier_map")	
-	private final SparseArray<Classifier> d_classifierMap;*/
 
 	private static final String TAG = "ClassifierList";
 	
-    @SerializedName("named_classifiers")
 	private HashMap<String, Classifier> d_namedClassifiers;
 
-	private transient final Random d_keyGenerator;
+	private final Random d_keyGenerator;
 	
 	public ClassifierList(){
 		//d_classifierMap = new SparseArray<Classifier>();

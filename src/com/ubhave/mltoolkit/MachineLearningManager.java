@@ -21,11 +21,8 @@ import com.ubhave.mltoolkit.utils.Signature;
 /**
  * Deals with instantiating classifiers, sending training/test data
  * to the right classifier, namely the one that an application has instantiated earlier.
- * Makes sure that the state is preserved throughout the application lifetime and beyond.
- * It has to save the state of the classifier when the service is shut down. 
- * It should also be able to save the classifier state on the persistent storage using GSON. 
- * Finally, this class should enable remote classifier loading and uploading to a server.
- * 
+ * Has methods that allow it to save classifiers to a file, and load them from a file 
+ * This should be used when a service that uses the manager is (re)started/destroyed. 
  * 
  */
 
@@ -69,13 +66,13 @@ public class MachineLearningManager {
 	
 	private MachineLearningManager(Context a_context) throws IOException{
 		d_context = a_context;
-		//if (Arrays.asList(d_context.fileList()).contains(Constants.CLASSIFIER_STORAGE_FILE)){	
-		//	d_classifiers = loadFromPersistent();	
-		//}
-		//else{
+		// automatic loading if classifiers exist on the device
+		if (Arrays.asList(d_context.fileList()).contains(Constants.CLASSIFIER_STORAGE_FILE)){	
+			d_classifiers = loadFromPersistent();	
+		}
+		else{
 			d_classifiers = new ClassifierList();
-		//}
-		
+		}		
 	}
 	
 	public Classifier addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{

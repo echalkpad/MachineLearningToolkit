@@ -25,15 +25,12 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 	// For each feature we hold the count of occurrences of every class variable value.
 	// These are further bisected to the feature values in case of NOMINAL features.
 	// For NUMERIC features we keep stats necessary for Gaussian distribution calculation.
-    @SerializedName("value_counts")
 	private HashMap<String, HashMap<String, double[]>> d_valueCounts;
 
     // Holds the number of occurrences of each value that the class variable may take.
-    @SerializedName("class_counts")
 	private double[] d_classCounts;
 	
     // Fixes the problem of too few occurrences in certain bins.
-    @SerializedName("laplace_smoothing")
 	private boolean d_LaplaceSmoothing;
 	
 	
