@@ -7,13 +7,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import com.ubhave.mltoolkit.classifier.Classifier;
+import com.ubhave.mltoolkit.classifier.ID3;
+import com.ubhave.mltoolkit.classifier.NaiveBayes;
+import com.ubhave.mltoolkit.classifier.ZeroR;
 import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
@@ -27,7 +40,6 @@ import com.ubhave.mltoolkit.utils.Signature;
  */
 
 // TODO: perhaps we need some settings params
-// TODO: need to distinguish among classifier types when deserializing.
 
 public class MachineLearningManager {
 	
@@ -117,6 +129,8 @@ public class MachineLearningManager {
 	
 	public ClassifierList loadFromPersistent() {
 
+		Log.d(TAG, "loadFromPersistent");
+		
 		StringBuilder JSONstring = new StringBuilder();
 		
 		try {
@@ -126,6 +140,7 @@ public class MachineLearningManager {
 			String line;
 			while ((line = br.readLine()) != null) {
 				JSONstring.append(line);
+				Log.d(TAG, "Read "+line);
 			}
 			br.close();			
 		} catch (IOException e) {
@@ -133,8 +148,43 @@ public class MachineLearningManager {
 			e.printStackTrace();
 		}
 
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder()
+			.registerTypeHierarchyAdapter(Classifier.class, new ClassifierAdapter())
+			.create();
+		
 		ClassifierList list = (ClassifierList) gson.fromJson(JSONstring.toString(), ClassifierList.class);
 		return list;
+	}
+	
+	static class ClassifierAdapter implements JsonDeserializer<Classifier> {
+		
+		Gson gson;		
+		
+		ClassifierAdapter(){
+			GsonBuilder gsonBuilder = new GsonBuilder();
+		    gson = gsonBuilder.create();		    
+		}
+		
+		public Classifier deserialize(JsonElement a_elem, Type a_type, JsonDeserializationContext a_context) throws JsonParseException {
+			Log.d(TAG, "Deserialize a classifier");
+			Classifier result = null;
+			
+			JsonObject object = a_elem.getAsJsonObject();
+			int type = object.get("d_type").getAsInt();
+			Log.d(TAG, "Classifier type "+type);
+			switch(type){
+				case Constants.TYPE_NAIVE_BAYES:
+					result = gson.fromJson(a_elem, NaiveBayes.class);					
+					break;
+				case Constants.TYPE_ID3:
+					result = gson.fromJson(a_elem, ID3.class);
+					break;
+				case Constants.TYPE_ZERO_R:
+					result = gson.fromJson(a_elem, ZeroR.class);
+					break;
+			}
+			result.printClassifierInfo();
+			return result;
+		}
 	}
 }

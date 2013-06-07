@@ -4,25 +4,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import com.google.gson.annotations.SerializedName;
-
+import android.util.Log;
 
 public class Feature {
 	
+	private static final String TAG = "Feature";
+
 	public static final int NOMINAL = 0;
 	
 	public static final int NUMERIC = 1;
 	
-	@SerializedName("feature_type")
 	private int d_type;
 	
-	@SerializedName("feature_name")
 	private String d_name;
 	
-	@SerializedName("feature_categories")
     private ArrayList<String> d_categories;
 	
-	@SerializedName("feature_category_index")
     private HashMap<String,Integer> d_categoryIndex;
     
 	public Feature(String fname, int ftype) throws MLException{
@@ -45,7 +42,9 @@ public class Feature {
 		d_name = fname;
 		d_categories = new ArrayList<String>(Arrays.asList(fvalues));
 		d_categoryIndex = new HashMap<String, Integer>();
- 		for(int i=0;i<fvalues.length;i++) d_categoryIndex.put(fvalues[i], Integer.valueOf(i));
+ 		for(int i=0;i<fvalues.length;i++) {
+ 			d_categoryIndex.put(fvalues[i], Integer.valueOf(i));
+ 		}
 	}
 	
 	public Feature(String fname, int ftype, ArrayList<String> fvalues) throws MLException{
@@ -75,7 +74,9 @@ public class Feature {
 	}
 	
 	public int indexOfCategory(String value){
+		Log.d(TAG, "feature "+d_name+"going for value "+value);
 		return d_categoryIndex.get(value);
+		
 	}
 	
 	public String categoryOfIndex(int index){

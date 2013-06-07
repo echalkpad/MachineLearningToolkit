@@ -7,6 +7,7 @@ import java.util.HashMap;
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
+import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.Feature;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
@@ -33,9 +34,9 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
     // Fixes the problem of too few occurrences in certain bins.
 	private boolean d_LaplaceSmoothing;
 	
-	
 	public NaiveBayes(Signature a_signature) {
-		super(a_signature);
+		super(a_signature);		
+		d_type = Constants.TYPE_NAIVE_BAYES;
 		initialize();
 	}
 	
@@ -251,6 +252,14 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 					Value.NOMINAL_VALUE);
 			return maxClass;
 		}
+	}
+
+	@Override
+	public void printClassifierInfo() {
+		Log.d(TAG, "Classifer type: "+d_type);
+		Log.d(TAG, "Signature: "+d_signature.toString());
+		Log.d(TAG, "Class counts: "+d_classCounts);
+		Log.d(TAG, "Value counts: "+d_valueCounts);
 	}
 	
 

@@ -22,8 +22,6 @@ public class ZeroR extends Classifier implements OnlineClassifier {
 
 	private static final String TAG = "ZeroR";
 
-    // Holds the number of occurrences of each value that the class variable may take.
-    @SerializedName("class_counts")
 	private double[] d_classCounts;
     
 	private static Object d_lock = new Object();
@@ -91,5 +89,11 @@ public class ZeroR extends Classifier implements OnlineClassifier {
 			Value maxClass = new Value(mean, Value.NUMERIC_VALUE);
 			return maxClass;
 		}
+	}
+
+	@Override
+	public void printClassifierInfo() {
+		// TODO Auto-generated method stub
+		
 	}
 }

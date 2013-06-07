@@ -5,19 +5,15 @@ import java.util.HashMap;
 
 import android.util.Log;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Signature {
 
 	private static final String TAG = "Signature";
 	
-    @SerializedName("features")
 	private ArrayList<Feature> d_features;
 	
     private HashMap<String, Feature> d_namesFeatures;
     
-    @SerializedName("class_index")
-	private int d_classIndex;		
+    private int d_classIndex;		
 
 	public Signature(ArrayList<Feature> a_features, int a_classIndex){
 		d_namesFeatures = new HashMap<String, Feature>();
@@ -69,5 +65,11 @@ public class Signature {
 			}
 		}
 		return true;	
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 }

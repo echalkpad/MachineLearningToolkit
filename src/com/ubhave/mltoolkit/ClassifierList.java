@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import com.ubhave.mltoolkit.classifier.Classifier;
+import com.ubhave.mltoolkit.classifier.ID3;
 import com.ubhave.mltoolkit.classifier.NaiveBayes;
 import com.ubhave.mltoolkit.classifier.ZeroR;
 import com.ubhave.mltoolkit.utils.Constants;
@@ -34,6 +35,7 @@ public class ClassifierList {
 	
 	public ClassifierList(){
 		//d_classifierMap = new SparseArray<Classifier>();
+		Log.d(TAG, "ClassifierList empty constructor");
 		d_namedClassifiers = new HashMap<String, Classifier>();
 		d_keyGenerator = new Random();	
 	}
@@ -47,6 +49,9 @@ public class ClassifierList {
 				Log.d(TAG, "create NaiveBayes");
 				// TODO we use laplace smoothing here
 				return new NaiveBayes(a_signature, true);
+			case Constants.TYPE_ID3:
+				Log.d(TAG, "create ID3");
+				return new ID3(a_signature);			
 			case Constants.TYPE_ZERO_R:
 				Log.d(TAG, "create ZeroR");
 				return new ZeroR(a_signature);

@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.util.Log;
+
+import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.Feature;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
@@ -53,10 +56,13 @@ public class ID3 extends Classifier{
 	private boolean d_isLeaf;
 	
 	private HashMap<Object, ID3> d_subtrees;
-	
+
+	private static final String TAG = "ID3";
+
 	private static int[] allFeaturesArray(Signature a_signature) {
 		int[] candidateFeatures = new int[a_signature.getFeatures().size()];
 		Arrays.fill(candidateFeatures, 1);
+		candidateFeatures[a_signature.getClassIndex()] = 0;
 		return candidateFeatures;
 	}
 	public ID3(Signature a_signature) {
@@ -65,6 +71,7 @@ public class ID3 extends Classifier{
 	
 	public ID3(Signature a_signature, int[] a_candidateFeatures) {
 		super(a_signature);
+		d_type = Constants.TYPE_ID3;
 		d_subtrees = new HashMap<Object, ID3>();
 		d_candidateFeatures = a_candidateFeatures;
 		d_isLeaf = true;
@@ -162,9 +169,10 @@ public class ID3 extends Classifier{
 					double sumEntropies = 0;
 					while (it.hasNext()) {
 						Entry<String, ArrayList<Instance>> pairs = it.next();
-						sumEntropies += calculateEntropy(pairs.getValue());
+						double pFeatureValue = pairs.getValue().size()/(double)instances.size();
+						double entropy = calculateEntropy(pairs.getValue());
+						sumEntropies += pFeatureValue * entropy;
 					}
-					
 					double IGvalue = totalSetEntropy - sumEntropies;
 					
 					if (IGvalue > maxIG) {
@@ -173,9 +181,7 @@ public class ID3 extends Classifier{
 						maxSubsets = subsets;
 					}
 					IG[i] = IGvalue;
-					
 				}
-				
 			}
 			// Pick the best attribute 
 			d_bestFeature = d_signature.getFeatureAtIndex(maxIGindex);
@@ -183,7 +189,7 @@ public class ID3 extends Classifier{
 			d_isLeaf = false;
 			
 			// TODO: what happens if some of the deciding feature values are not observed
-			// in the training set?
+			// in the training set? Right now we point it to the majority class.
 			
 			ArrayList<String> featureValueList = d_bestFeature.getValues();
 			int candidateFeatures[] = (int[]) d_candidateFeatures.clone();
@@ -228,11 +234,14 @@ public class ID3 extends Classifier{
 		for (int j=0; j<classCounts.length; j++) classCountsTotal += classCounts[j];
 		for (int j=0; j<classCounts.length; j++) {
 			double probabilityFeatureValue = (double)classCounts[j]/classCountsTotal;
-			entropy -= (probabilityFeatureValue)*Math.log(probabilityFeatureValue);
+			if (probabilityFeatureValue > 0) {
+				entropy -= (probabilityFeatureValue)*Math.log(probabilityFeatureValue);
+			}
 		}
 		
 		return entropy;
 	}
+	
 	@Override
 	public Value classify(Instance a_instance) {
 		
@@ -244,5 +253,28 @@ public class ID3 extends Classifier{
 			return nextTree.classify(a_instance);
 		}
 	}
-
+	
+	private String print(int depth) {
+		String output = "";
+		if (d_isLeaf) {
+			output = d_majorValue.getValue().toString()+"\n";
+		} else {
+			output = d_bestFeature.name()+"\n";
+			Iterator<Entry<Object, ID3>> it = d_subtrees.entrySet().iterator();
+			while(it.hasNext()){
+				Entry<Object, ID3> pair = it.next();
+				String tmp = "\t";
+				for (int i=0; i<depth; i++){
+					tmp += "\t";
+				}
+				output += (tmp+pair.getKey().toString()+" -> "+pair.getValue().print(depth+1)+"\n");
+			}
+		}
+		return output;		
+	}
+	
+	@Override
+	public void printClassifierInfo() {
+		Log.d(TAG, this.print(0));		
+	}
 }
