@@ -47,7 +47,6 @@ public class ClassifierList {
 		switch (a_type) {
 			case Constants.TYPE_NAIVE_BAYES:
 				Log.d(TAG, "create NaiveBayes");
-				// TODO we use laplace smoothing here
 				return new NaiveBayes(a_signature, true);
 			case Constants.TYPE_ID3:
 				Log.d(TAG, "create ID3");
@@ -67,8 +66,6 @@ public class ClassifierList {
 		if (d_namedClassifiers.containsKey(a_classifierID))
 		{
 			d_namedClassifiers.remove(a_classifierID);
-			//c.kill();			
-			//d_classifierMap.delete(a_classifierID);
 		}
 	}
 
@@ -79,50 +76,13 @@ public class ClassifierList {
 		} else {
 			return null;
 		}
-			
-		//return d_classifierMap.get(a_classifierID);
-	}
-	
-	/*
-	public void removeClassifier(int a_classifierID)
-	{
-		Classifier c = d_classifierMap.get(a_classifierID);
-		if (c != null)
-		{
-			c.kill();
-			d_classifierMap.delete(a_classifierID);
-		}
-	}
-
-	public Classifier getClassifier(int a_classifierID)
-	{
-		return d_classifierMap.get(a_classifierID);
-	}
-	*/
+	}	
 	
 	public synchronized Classifier addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
 		Log.d(TAG, "addClassifier");
 		Classifier classifier = createClassifier(a_type, a_signature);
-		//int classifierID = randomKey();
-		//d_classifierMap.append(classifierID, classifier);
 		d_namedClassifiers.put(a_name, classifier);
 		return classifier;
 	}
-	
-	/*
-	private int randomKey() throws MLException
-	{
-		int classifierID = d_keyGenerator.nextInt();
-		int loopCount = 0;
-		while (d_classifierMap.get(classifierID) != null)
-		{
-			if (loopCount > 1000)
-			{
-				throw new MLException(MLException.INVALID_STATE, "Listener map >1000 key conflicts.");
-			}
-			classifierID = d_keyGenerator.nextInt();
-			loopCount++;
-		}
-		return classifierID;
-	}*/
+		
 }
