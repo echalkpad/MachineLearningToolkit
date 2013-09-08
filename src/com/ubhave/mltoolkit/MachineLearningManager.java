@@ -1,9 +1,11 @@
 package com.ubhave.mltoolkit;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -84,14 +87,22 @@ public class MachineLearningManager {
 		}
 		else{
 			d_classifiers = new ClassifierList();
-		}		
+		}
 	}
 	
 	public Classifier addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
 		Log.d(TAG, "addClassifier");
 
-		if (d_classifiers.getClassifier(a_name) != null) 
-			throw new MLException(MLException.CLASSIFIER_EXISTS, "Classifier "+a_name+" already exists.");
+		Classifier cls = d_classifiers.getClassifier(a_name);
+		
+		// TODO: Expose classifier properties so that we can check if the existing classifier is the 
+		// same as the one we require.
+		if (cls != null) {
+			Log.d(TAG, "return existing classifier");
+			return cls;
+		}
+		//throw new MLException(MLException.CLASSIFIER_EXISTS, "Classifier "+a_name+" already exists.");
+		Log.d(TAG, "return brand new classifier");
 		return d_classifiers.addClassifier(a_type, a_signature, a_name);
 	}
 	
@@ -106,6 +117,27 @@ public class MachineLearningManager {
 	// This will return null in case there is no such classifier
 	public Classifier getClassifier(String a_classifierID){
 		return d_classifiers.getClassifier(a_classifierID);		
+	}
+	
+	public void saveToPersistentExternal(String a_filename) {
+		Gson gson = new Gson();
+		String JSONstring = gson.toJson(d_classifiers);
+	
+		try {
+			String root = Environment.getExternalStorageDirectory().toString();
+			File file = new File(root + a_filename);  			
+			FileOutputStream fos = new FileOutputStream(file);		
+			OutputStreamWriter osw = new OutputStreamWriter(fos);
+			osw.write(JSONstring);
+			osw.flush();
+			osw.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void saveToPersistent() {
@@ -125,6 +157,37 @@ public class MachineLearningManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public ClassifierList loadFromExternalPersistent(String a_filename) {
+		
+		Log.d(TAG, "loadFromPersistent");
+		
+		StringBuilder JSONstring = new StringBuilder();
+		
+		try {
+			File sdcard = Environment.getExternalStorageDirectory();
+			File file = new File(sdcard,a_filename);
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			
+			String line;
+			while ((line = br.readLine()) != null) {
+				JSONstring.append(line);
+				Log.d(TAG, "Read "+line);
+			}
+			br.close();			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Gson gson = new GsonBuilder()
+			.registerTypeHierarchyAdapter(Classifier.class, new ClassifierAdapter())
+			.create();
+		
+		ClassifierList list = (ClassifierList) gson.fromJson(JSONstring.toString(), ClassifierList.class);
+		return list;
 	}
 	
 	public ClassifierList loadFromPersistent() {
