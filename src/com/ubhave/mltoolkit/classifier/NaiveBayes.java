@@ -185,7 +185,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 						Log.d(TAG, "Class feature counts: "+classFeatureCounts[j]);
 					}
 					
-					Log.d(TAG, "Feature value: "+((Float)featureValue.getValue()).toString());
+					Log.d(TAG, "Feature value: "+featureValue.getValue().toString());
 					
 					int featureValueIndex = feature.indexOfCategory((String) featureValue.getValue());						
 					

@@ -83,7 +83,7 @@ public class MachineLearningManager {
 		d_context = a_context;
 		// automatic loading if classifiers exist on the device
 		if (Arrays.asList(d_context.fileList()).contains(Constants.CLASSIFIER_STORAGE_FILE)){	
-			d_classifiers = loadFromPersistent();	
+			d_classifiers = loadFromPersistent();
 		}
 		else{
 			d_classifiers = new ClassifierList();
