@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2013, University of Birmingham, UK
+ * Veljko Pejovic,  <v.pejovic@cs.bham.ac.uk>
+ * 
+ * 
+ * This library was developed as part of the EPSRC Ubhave (Ubiquitous and Social
+ * Computing for Positive Behaviour Change) Project. For more information, please visit
+ * http://www.ubhave.org
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with
+ * or without fee is hereby granted, provided that the above copyright notice and this
+ * permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ******************************************************************************/
 package com.ubhave.mltoolkit.classifier;
 
 import java.util.ArrayList;
@@ -16,16 +37,22 @@ import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
+// TODO: Nominal attributes are supported for now.
+// TODO: How to handle missing attributes?
+// TODO: Pruning?
+
 /**
- * TODO: Nominal attributes are supported for now.
- * TODO: How to handle missing attributes?
- * TODO: Pruning?
- * @author veljko
+ * ID3, a tree-based classifier according to: 
+ * Quinlan, J. R. 1986. Induction of Decision Trees. Mach. Learn. 1, 1 (Mar. 1986), 81-106
+ * This implementation supports nominal attributes only.
+ * 
+ * @author Veljko Pejovic, University of Birmingham, UK <v.pejovic@cs.bham.ac.uk>
  *
  */
 public class ID3 extends Classifier{
 
 	/*
+	 * Algorithm pseudocode (from Wikipedia):
 	ID3 (Examples, Target_Attribute, Attributes)
     Create a root node for the tree
     If all examples are positive, Return the single-node tree Root, with label = +.
@@ -33,7 +60,7 @@ public class ID3 extends Classifier{
     If number of predicting attributes is empty, then Return the single node tree Root,
     with label = most common value of the target attribute in the examples.
     Otherwise Begin
-        A ← The Attribute that best classifies examples.
+        A <- The Attribute that best classifies examples.
         Decision Tree attribute for Root = A.
         For each possible value, v_i, of A,
             Add a new tree branch below Root, corresponding to the test A = v_i.
@@ -105,7 +132,6 @@ public class ID3 extends Classifier{
 			return;
 		}
 		
-
 		// If number of predicting attributes is empty, then Return the single node tree Root,
 	    // with label = most common value of the target attribute in the examples.
 		int numCandidateFeatures = 0;

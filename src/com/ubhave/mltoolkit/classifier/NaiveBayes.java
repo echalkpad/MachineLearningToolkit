@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2013, University of Birmingham, UK
+ * Veljko Pejovic,  <v.pejovic@cs.bham.ac.uk>
+ * 
+ * 
+ * This library was developed as part of the EPSRC Ubhave (Ubiquitous and Social
+ * Computing for Positive Behaviour Change) Project. For more information, please visit
+ * http://www.ubhave.org
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with
+ * or without fee is hereby granted, provided that the above copyright notice and this
+ * permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ******************************************************************************/
 package com.ubhave.mltoolkit.classifier;
 
 import java.util.ArrayList;
@@ -17,6 +38,16 @@ import com.ubhave.mltoolkit.utils.Value;
 // TODO: check if there is a distinction between the class feature and other features
 // Do we need such a distinction?
 
+/**
+ * Naive Bayesian classifier that supports both nominal and numeric attributes.
+ * Numeric features are modelled with a Gaussian distribution. 
+ * Laplace smoothing is supported for nominal attributes, so that classes with
+ * high preference for a single value do not overfit. 
+ * The classifier is an online classifier, i.e. training can happen iteratively. 
+ * 
+ * @author Veljko Pejovic, University of Birmingham, UK <v.pejovic@cs.bham.ac.uk>
+ *
+ */
 public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 	private static final String TAG = "NaiveBayes";
@@ -261,6 +292,4 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		Log.d(TAG, "Class counts: "+d_classCounts);
 		Log.d(TAG, "Value counts: "+d_valueCounts);
 	}
-	
-
 }

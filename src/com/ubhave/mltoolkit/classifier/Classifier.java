@@ -1,15 +1,42 @@
+/*******************************************************************************
+ * Copyright (c) 2013, University of Birmingham, UK
+ * Veljko Pejovic,  <v.pejovic@cs.bham.ac.uk>
+ * 
+ * 
+ * This library was developed as part of the EPSRC Ubhave (Ubiquitous and Social
+ * Computing for Positive Behaviour Change) Project. For more information, please visit
+ * http://www.ubhave.org
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with
+ * or without fee is hereby granted, provided that the above copyright notice and this
+ * permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ******************************************************************************/
 package com.ubhave.mltoolkit.classifier;
 
 import java.util.ArrayList;
 
 import android.util.Log;
 
-import com.google.gson.annotations.SerializedName;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
+/**
+ * Every classifier has a signature that defines the features it uses,
+ * as well as the class feature. It needs to support training and classification. 
+ * 
+ * @author Veljko Pejovic, University of Birmingham, UK <v.pejovic@cs.bham.ac.uk>
+ *
+ */
 public abstract class Classifier {
 	
 	protected Signature d_signature;
@@ -17,10 +44,6 @@ public abstract class Classifier {
 	protected int d_type;
 	
 	private static final String TAG = "Classifier";
-	
-	/*public Classifier(){	
-		Log.d(TAG, "Classifier empty constructor");
-	}*/
 	
 	public Classifier(Signature a_signature) {
 		d_signature = a_signature;

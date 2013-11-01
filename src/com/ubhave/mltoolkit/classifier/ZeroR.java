@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2013, University of Birmingham, UK
+ * Veljko Pejovic,  <v.pejovic@cs.bham.ac.uk>
+ * 
+ * 
+ * This library was developed as part of the EPSRC Ubhave (Ubiquitous and Social
+ * Computing for Positive Behaviour Change) Project. For more information, please visit
+ * http://www.ubhave.org
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with
+ * or without fee is hereby granted, provided that the above copyright notice and this
+ * permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ******************************************************************************/
 package com.ubhave.mltoolkit.classifier;
 
 import java.util.ArrayList;
@@ -5,7 +26,6 @@ import java.util.Arrays;
 
 import android.util.Log;
 
-import com.google.gson.annotations.SerializedName;
 import com.ubhave.mltoolkit.utils.Feature;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
@@ -13,10 +33,13 @@ import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
 /**
+ * 
  * ZeroR classifier is not taking any features into account during the classification.
  * It merely outputs the mean value/most frequent class. 
  * Besides classification, we can use ZeroR for regression.
  * 
+ * @author Veljko Pejovic, University of Birmingham, UK <v.pejovic@cs.bham.ac.uk>
+ *
  */
 public class ZeroR extends Classifier implements OnlineClassifier {
 
@@ -93,7 +116,6 @@ public class ZeroR extends Classifier implements OnlineClassifier {
 
 	@Override
 	public void printClassifierInfo() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 }

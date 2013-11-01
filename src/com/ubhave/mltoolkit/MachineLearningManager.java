@@ -1,3 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2013, University of Birmingham, UK
+ * Veljko Pejovic,  <v.pejovic@cs.bham.ac.uk>
+ * 
+ * 
+ * This library was developed as part of the EPSRC Ubhave (Ubiquitous and Social
+ * Computing for Positive Behaviour Change) Project. For more information, please visit
+ * http://www.ubhave.org
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with
+ * or without fee is hereby granted, provided that the above copyright notice and this
+ * permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ******************************************************************************/
 package com.ubhave.mltoolkit;
 
 import java.io.BufferedReader;
@@ -34,16 +55,20 @@ import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 
+// TODO: What are some of the settings that we can use here? 
+// How should we load them in the manager?
+
 /**
  * Deals with instantiating classifiers, sending training/test data
  * to the right classifier, namely the one that an application has instantiated earlier.
- * Has methods that allow it to save classifiers to a file, and load them from a file 
- * This should be used when a service that uses the manager is (re)started/destroyed. 
+ * Has methods that allow it to save classifiers to a file, and load them from a file. 
+ * This should be used when a service that uses the manager is (re)started/destroyed.  
  * 
+ * Only one MachineLearningManager exists per context to ensure consistency.  
+ * 
+ * @author Veljko Pejovic, University of Birmingham, UK <v.pejovic@cs.bham.ac.uk>
+ *
  */
-
-// TODO: perhaps we need some settings params
-
 public class MachineLearningManager {
 	
 	private static final String TAG = "MLManager";
@@ -59,7 +84,8 @@ public class MachineLearningManager {
 	public static MachineLearningManager getMLManager(Context a_context) throws MLException{
 		
 		if (a_context == null) {
-			throw new MLException(MLException.INVALID_PARAMETER, " Invalid parameter, context object passed is null");
+			throw new MLException(MLException.INVALID_PARAMETER, 
+					" Invalid parameter, context object passed is null");
 		}
 		if (d_manager == null)
 		{
@@ -95,8 +121,8 @@ public class MachineLearningManager {
 
 		Classifier cls = d_classifiers.getClassifier(a_name);
 		
-		// TODO: Expose classifier properties so that we can check if the existing classifier is the 
-		// same as the one we require.
+		// TODO: Expose classifier properties so that we can check 
+		// if the existing classifier is the same as the one we require.
 		if (cls != null) {
 			Log.d(TAG, "return existing classifier");
 			return cls;
@@ -161,7 +187,7 @@ public class MachineLearningManager {
 	
 	public ClassifierList loadFromExternalPersistent(String a_filename) {
 		
-		Log.d(TAG, "loadFromPersistent");
+		Log.d(TAG, "loadFromExternalPersistent");
 		
 		StringBuilder JSONstring = new StringBuilder();
 		
