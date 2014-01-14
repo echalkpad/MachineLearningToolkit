@@ -211,16 +211,16 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 				double classFeatureTotal = 0;
 				
 				if (featureValue.getValueType() == Value.NOMINAL_VALUE) {
+					String printFeatureCounts = "Class feature counts: ";
 					for (int j=0; j<classFeatureCounts.length; j++) {
 						classFeatureTotal+=classFeatureCounts[j];
-						Log.d(TAG, "Class feature counts: "+classFeatureCounts[j]);
+						printFeatureCounts += classFeatureCounts[j]+", ";
 					}
 					
-					Log.d(TAG, "Feature value: "+featureValue.getValue().toString());
+					int featureValueIndex = feature.indexOfCategory((String) featureValue.getValue());	
 					
-					int featureValueIndex = feature.indexOfCategory((String) featureValue.getValue());						
-					
-					Log.d(TAG, "Feature value index: "+featureValueIndex);
+					Log.d(TAG, printFeatureCounts);
+					Log.d(TAG, "Feature value "+featureValue.getValue().toString()+" index: "+featureValueIndex);
 							
 					if (d_LaplaceSmoothing){
 						classFeatureProbs[indexOfClassValue]=classFeatureCounts[featureValueIndex]+1/
@@ -245,6 +245,10 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 						mean = classFeatureCounts[1]/classFeatureCounts[0];
 						stdDev = Math.sqrt(classFeatureCounts[2] - Math.pow(mean,2));
 						normalProbability = Math.exp(Math.pow(featureValueFloat - mean ,2))/(2*stdDev*Math.sqrt(2*Math.PI));
+						// TODO: if the current value equals the mean the normal probability goes to infinity;
+						// to prevent this we, cap it to 1.0.
+						if (Double.isInfinite(normalProbability)) normalProbability = 1.0;
+						
 					}
 					
 					Log.d(TAG, "calc for: "+ classValue

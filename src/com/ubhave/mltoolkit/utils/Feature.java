@@ -101,7 +101,7 @@ public class Feature {
 	}
 	
 	public int indexOfCategory(String value){
-		Log.d(TAG, "feature "+d_name+"going for value "+value);
+		Log.d(TAG, "feature "+d_name+" going for value "+value);
 		return d_categoryIndex.get(value);
 		
 	}
