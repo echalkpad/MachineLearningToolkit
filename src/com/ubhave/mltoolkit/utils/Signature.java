@@ -78,6 +78,10 @@ public class Signature {
 		return d_features;
 	}
 	
+	public int size() {
+		return d_features.size();
+	}
+	
 	public boolean checkInstanceCompliance(Instance a_instance) {
 		Log.d(TAG, "checkInstanceCompliance");
 		Log.d(TAG, "size instance: "+a_instance.size()+" size features: "+this.getFeatures().size());

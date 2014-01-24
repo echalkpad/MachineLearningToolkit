@@ -27,7 +27,25 @@ public class Constants {
 	public static final int TYPE_NAIVE_BAYES = 1001;
 	public static final int TYPE_BAYES_NET = 1002;
 	public static final int TYPE_ID3 = 1003;
-
+	public static final int TYPE_DENSITY_CLUSTER = 1004;
+	
 	public static final String CLASSIFIER_STORAGE_FILE = "classifiers.json";
+
+	// Config params
+	
+	// Density clustering
+	public static final String MAX_CLUSTER_DISTANCE = "maxClusterDistance";
+	public static final String MIN_INCLUSION_PERCENT = "minInclusionPercent";
+
+	public static final double DEFAULT_MAX_CLUSTER_DISTANCE = 1; // in km if GPS
+	public static final double DEFAULT_MIN_INCLUSION_PERCENT = 50; 
+	
+	// Naive Bayes
+	public static final String LAPLACE_SMOOTHING = "laplaceSmoothing";
+	
+	public static final boolean DEFAULT_LAPLACE_SMOOTHING = true;
+	
+	
+
 	
 }

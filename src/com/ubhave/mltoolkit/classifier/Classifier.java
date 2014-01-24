@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
+import com.ubhave.mltoolkit.utils.ClassifierConfig;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
@@ -43,10 +44,13 @@ public abstract class Classifier {
 	
 	protected int d_type;
 	
+	protected ClassifierConfig d_config;
+	
 	private static final String TAG = "Classifier";
 	
-	public Classifier(Signature a_signature) {
+	public Classifier(Signature a_signature, ClassifierConfig a_config) {
 		d_signature = a_signature;
+		d_config = a_config;
 	}
 	
 	public abstract void train(ArrayList<Instance> instances) throws MLException;

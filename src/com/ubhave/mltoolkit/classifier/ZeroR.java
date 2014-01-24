@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import android.util.Log;
 
+import com.ubhave.mltoolkit.utils.ClassifierConfig;
 import com.ubhave.mltoolkit.utils.Feature;
 import com.ubhave.mltoolkit.utils.Instance;
 import com.ubhave.mltoolkit.utils.MLException;
@@ -49,8 +50,8 @@ public class ZeroR extends Classifier implements OnlineClassifier {
     
 	private static Object d_lock = new Object();
 	
-	public ZeroR(Signature a_signature) {
-		super(a_signature);
+	public ZeroR(Signature a_signature, ClassifierConfig a_config) {
+		super(a_signature, a_config);
 		Feature classFeature = d_signature.getClassFeature(); 
 		if (classFeature.getFeatureType() == Feature.NOMINAL)
 			d_classCounts = new double[classFeature.numberOfCategories()];		

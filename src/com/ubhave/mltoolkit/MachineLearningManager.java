@@ -51,6 +51,7 @@ import com.ubhave.mltoolkit.classifier.Classifier;
 import com.ubhave.mltoolkit.classifier.ID3;
 import com.ubhave.mltoolkit.classifier.NaiveBayes;
 import com.ubhave.mltoolkit.classifier.ZeroR;
+import com.ubhave.mltoolkit.utils.ClassifierConfig;
 import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
@@ -116,7 +117,7 @@ public class MachineLearningManager {
 		}
 	}
 	
-	public Classifier addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
+	public Classifier addClassifier(int a_type, Signature a_signature, ClassifierConfig a_config, String a_name) throws MLException{
 		Log.d(TAG, "addClassifier");
 
 		Classifier cls = d_classifiers.getClassifier(a_name);
@@ -129,7 +130,7 @@ public class MachineLearningManager {
 		}
 		//throw new MLException(MLException.CLASSIFIER_EXISTS, "Classifier "+a_name+" already exists.");
 		Log.d(TAG, "return brand new classifier");
-		return d_classifiers.addClassifier(a_type, a_signature, a_name);
+		return d_classifiers.addClassifier(a_type, a_signature, a_config, a_name);
 	}
 	
 	public void removeClassifier(String a_classifierID){

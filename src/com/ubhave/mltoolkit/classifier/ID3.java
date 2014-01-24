@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 
 import android.util.Log;
 
+import com.ubhave.mltoolkit.utils.ClassifierConfig;
 import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.Feature;
 import com.ubhave.mltoolkit.utils.Instance;
@@ -92,12 +93,14 @@ public class ID3 extends Classifier{
 		candidateFeatures[a_signature.getClassIndex()] = 0;
 		return candidateFeatures;
 	}
-	public ID3(Signature a_signature) {
-		this(a_signature, allFeaturesArray(a_signature));
+	
+	// Entry point for outside app
+	public ID3(Signature a_signature, ClassifierConfig a_config) {		
+		this(a_signature, a_config, allFeaturesArray(a_signature));
 	}
 	
-	public ID3(Signature a_signature, int[] a_candidateFeatures) {
-		super(a_signature);
+	private ID3(Signature a_signature, ClassifierConfig a_config, int[] a_candidateFeatures) {
+		super(a_signature, a_config);
 		d_type = Constants.TYPE_ID3;
 		d_subtrees = new HashMap<Object, ID3>();
 		d_candidateFeatures = a_candidateFeatures;
@@ -224,13 +227,13 @@ public class ID3 extends Classifier{
 			for (String value : featureValueList) {
 				ID3 subTree = null;
 				if (maxSubsets.containsKey(value)) {
-					subTree = new ID3(d_signature, candidateFeatures);
+					subTree = new ID3(d_signature, d_config, candidateFeatures);
 					subTree.train(maxSubsets.get(value));
 
 				} else {
 					// Shortcut to the majority class leaf.
 					Arrays.fill(candidateFeatures, 0);
-					subTree = new ID3(d_signature, candidateFeatures);
+					subTree = new ID3(d_signature, d_config, candidateFeatures);
 				}
 				d_subtrees.put(value, subTree);
 			}

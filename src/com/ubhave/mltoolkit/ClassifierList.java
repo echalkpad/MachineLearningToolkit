@@ -25,9 +25,11 @@ import java.util.HashMap;
 import java.util.Random;
 
 import com.ubhave.mltoolkit.classifier.Classifier;
+import com.ubhave.mltoolkit.classifier.DensityClustering;
 import com.ubhave.mltoolkit.classifier.ID3;
 import com.ubhave.mltoolkit.classifier.NaiveBayes;
 import com.ubhave.mltoolkit.classifier.ZeroR;
+import com.ubhave.mltoolkit.utils.ClassifierConfig;
 import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
@@ -56,23 +58,29 @@ public class ClassifierList {
 		d_keyGenerator = new Random();	
 	}
 	
-	private static Classifier createClassifier(int a_type, Signature a_signature){
+	private static Classifier createClassifier(
+			int a_type, 
+			Signature a_signature, 
+			ClassifierConfig a_config){
 		
 		Log.d(TAG, "createClassifier");
 
 		switch (a_type) {
 			case Constants.TYPE_NAIVE_BAYES:
 				Log.d(TAG, "create NaiveBayes");
-				return new NaiveBayes(a_signature, true);
+				return new NaiveBayes(a_signature, a_config);
 			case Constants.TYPE_ID3:
 				Log.d(TAG, "create ID3");
-				return new ID3(a_signature);			
+				return new ID3(a_signature, a_config);		
+			case Constants.TYPE_DENSITY_CLUSTER:
+				Log.d(TAG, "create DensityClustering");
+				return new DensityClustering(a_signature, a_config);				
 			case Constants.TYPE_ZERO_R:
 				Log.d(TAG, "create ZeroR");
-				return new ZeroR(a_signature);
+				return new ZeroR(a_signature, a_config);
 			default:
 				Log.d(TAG, "createDefault");
-				return new NaiveBayes(a_signature);		
+				return new NaiveBayes(a_signature, a_config);		
 		}
 	}
 
@@ -92,9 +100,9 @@ public class ClassifierList {
 		}
 	}	
 	
-	public synchronized Classifier addClassifier(int a_type, Signature a_signature, String a_name) throws MLException{
+	public synchronized Classifier addClassifier(int a_type, Signature a_signature, ClassifierConfig a_config, String a_name) throws MLException{
 		Log.d(TAG, "addClassifier");
-		Classifier classifier = createClassifier(a_type, a_signature);
+		Classifier classifier = createClassifier(a_type, a_signature, a_config);
 		d_namedClassifiers.put(a_name, classifier);
 		return classifier;
 	}
