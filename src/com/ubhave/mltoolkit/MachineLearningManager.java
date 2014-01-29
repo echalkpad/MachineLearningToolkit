@@ -48,6 +48,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import com.ubhave.mltoolkit.classifier.Classifier;
+import com.ubhave.mltoolkit.classifier.DensityClustering;
 import com.ubhave.mltoolkit.classifier.ID3;
 import com.ubhave.mltoolkit.classifier.NaiveBayes;
 import com.ubhave.mltoolkit.classifier.ZeroR;
@@ -56,8 +57,6 @@ import com.ubhave.mltoolkit.utils.Constants;
 import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 
-// TODO: What are some of the settings that we can use here? 
-// How should we load them in the manager?
 
 /**
  * Deals with instantiating classifiers, sending training/test data
@@ -136,10 +135,6 @@ public class MachineLearningManager {
 	public void removeClassifier(String a_classifierID){
 		d_classifiers.removeClassifier(a_classifierID);
 	}
-	
-	/*public Classifier getClassifier(int a_classifierID){
-		return d_classifiers.getClassifier(a_classifierID);		
-	}*/
 	
 	// This will return null in case there is no such classifier
 	public Classifier getClassifier(String a_classifierID){
@@ -269,6 +264,9 @@ public class MachineLearningManager {
 				case Constants.TYPE_ID3:
 					result = gson.fromJson(a_elem, ID3.class);
 					break;
+				case Constants.TYPE_DENSITY_CLUSTER:
+					result = gson.fromJson(a_elem, DensityClustering.class);
+					break;					
 				case Constants.TYPE_ZERO_R:
 					result = gson.fromJson(a_elem, ZeroR.class);
 					break;

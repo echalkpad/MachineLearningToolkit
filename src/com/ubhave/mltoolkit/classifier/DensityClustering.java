@@ -51,6 +51,9 @@ import com.ubhave.mltoolkit.utils.Value;
  * The classifier can only be instantiated with a nominal class feature and one 
  * or more numeric attribute features. 
  * 
+ * LIMITATION: If no data are present for a label, the assigned centroid will 
+ * have all zeros coordinates.
+ * 
  * @author Veljko Pejovic, University of Birmingham, UK <v.pejovic@cs.bham.ac.uk>
  *
  */
@@ -141,6 +144,7 @@ public class DensityClustering extends Classifier {
 	@Override
 	public void train(ArrayList<Instance> instances) throws MLException {
 		
+		Log.d(TAG, "train with "+instances.size()+" instances");
 		// Remove outliers (density based)
 		String curLabel;
 		double curCoordValues[] = new double[d_signature.size()-1];
@@ -157,7 +161,6 @@ public class DensityClustering extends Classifier {
 			for(int i=0; i<d_signature.size()-1; i++) {
 				curCoordValues[i] = (Double) curInstance.getValueAtIndex(i).getValue();
 			}
-			
 			
 			String otherLabel;
 			double otherCoordValues[] = new double[d_signature.size()-1];
@@ -200,6 +203,9 @@ public class DensityClustering extends Classifier {
 		}
 		// At this point only those instances that are tightly packed are in d_instanceQ
 		// Find cluster centroids
+		
+		Log.d(TAG, "Outliers removed. "+instances.size()+" instances left.");
+		
 		double centroidCoords[];
 		
 		for (Instance curInstance : instances) {
@@ -207,7 +213,10 @@ public class DensityClustering extends Classifier {
 			curLabel = (String) curInstance.getValueAtIndex(d_signature.getClassIndex()).getValue();
 			centroidCoords = d_centroids.get(curLabel);
 			
+			Log.d(TAG, "Current instance label "+curLabel);
+			
 			for(int i=0; i<d_signature.size()-1; i++) {
+				Log.d(TAG, "added coord "+i+ " with value "+(Double) curInstance.getValueAtIndex(i).getValue());
 				centroidCoords[i] += (Double) curInstance.getValueAtIndex(i).getValue();
 			}
 			
@@ -220,10 +229,17 @@ public class DensityClustering extends Classifier {
 			centroidCoords = d_centroids.get(classValue);
 			numTrains = d_numTrains.get(classValue);
 			
+			Log.d(TAG, "Centroid with label "+classValue+" contains " +numTrains+ " points.");
+			
 			for (int i=0; i<d_signature.size()-1; i++) {
-				centroidCoords[i] =  centroidCoords[i]/numTrains;
-			}			
-		}		
+				if (numTrains > 0)
+					centroidCoords[i] =  centroidCoords[i]/numTrains;
+				// otherwise keep them to zero
+			}
+			
+			d_centroids.put(classValue, centroidCoords); 
+		}
+		
 	}
 
 	@Override
