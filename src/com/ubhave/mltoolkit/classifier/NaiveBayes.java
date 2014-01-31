@@ -110,9 +110,19 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 				
 				Arrays.fill(classFeatureCounts, 0.0);
 				featureCount.put(classValue, classFeatureCounts);
-				Log.d(TAG, "Feature counts put for class value "+classValue);
+				//Log.d(TAG, "Feature counts put for class value "+classValue);
 			}
-			Log.d(TAG, "Feature counts put for "+feature.name());
+			String output = "Feature counts put for "+feature.name()+": ";
+			for (String key : featureCount.keySet()) {
+					String miniOutput = "";
+					double classFeatureCountsTest[] = featureCount.get(key);
+					for (int i=0; i<classFeatureCountsTest.length; i++) {
+						miniOutput += classFeatureCountsTest[i]+",";
+					}
+				
+					output +="{ "+key+", ["+miniOutput+"]},";					
+			}
+			Log.d(TAG, output);
 			d_valueCounts.put(feature.name(), featureCount);
 		}
 	}
@@ -135,8 +145,6 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 					"Class variable has to be of type NOMINAL.");
 		}
 		
-		Log.d(TAG, "Class value: "+(String) classValue.getValue());
-		Log.d(TAG, "Available values: "+classFeature.getValues());
 		int classValueInt = classFeature.indexOfCategory((String) classValue.getValue());
 		
 		d_classCounts[classValueInt] += 1;
@@ -151,16 +159,22 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 				Feature currentFeature = d_signature.getFeatureAtIndex(i); 
 				int featureValueCat = currentFeature.indexOfCategory((String) featureValue.getValue());				
 				classFeatureCounts[featureValueCat] += 1;
+				String output = "Update:"+d_signature.getFeatureAtIndex(i).name()
+						+"["+(String) classValue.getValue()+"] = {";
+				for (int j=0; j<classFeatureCounts.length; j++) {
+					output += classFeatureCounts[j]+",";
+				}
+				Log.d(TAG, output + "}");
 			}
 			if (featureValue.getValueType() == Value.NUMERIC_VALUE){
 				classFeatureCounts[0] += 1; // count				
 				classFeatureCounts[1] += (Float)featureValue.getValue(); // value sum
 				classFeatureCounts[2] += Math.pow((Float)featureValue.getValue(),2); // value square sum
+				Log.d(TAG, "Update:"+d_signature.getFeatureAtIndex(i).name()
+						+"["+(String) classValue.getValue()+"] = "
+						+"{"+classFeatureCounts[0]+","+classFeatureCounts[1]+","+classFeatureCounts[2]+"}");
 			}
-			// Do nothing for a missing value
-			Log.d(TAG, "Update for: "+(String) classValue.getValue()
-					+" and " + d_signature.getFeatureAtIndex(i).name()
-					+" to "+classFeatureCounts[0]+" and "+classFeatureCounts[1]);
+			// Do nothing for a missing value.
 		}
 	}
 
@@ -183,8 +197,6 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		double[] classPriors = new double[classValues.size()];
 		double[] classPosteriors = new double[classValues.size()];
 		
-		Log.d(TAG, "Class values: "+classValues);
-		
 		int classCountsTotal = 0;
 		for (int j=0; j<d_classCounts.length; j++) classCountsTotal += d_classCounts[j];
 		for (int j=0; j<classPriors.length; j++) {
@@ -194,8 +206,15 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 				classPriors[j] = d_classCounts[j]/classCountsTotal;
 			}
 			classPosteriors[j] = classPriors[j];
-			Log.d(TAG, "Class priors: "+classPriors[j]);
+			
 		}
+		
+		Log.d(TAG, "Class values: "+classValues);
+		String outputPrior="[";
+		for (int i=0; i<classPriors.length;i++) {
+			outputPrior += classPriors[i]+",";
+		}
+		Log.d(TAG, "Class priors: "+outputPrior);
 		
 		for (int i=0; i<a_instance.size(); i++){
 			Value featureValue = a_instance.getValueAtIndex(i);
@@ -214,17 +233,16 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 				double classFeatureTotal = 0;
 				
 				if (featureValue.getValueType() == Value.NOMINAL_VALUE) {
-					String printFeatureCounts = "Class feature counts: ";
+					/*String printFeatureCounts = "Class feature counts: ";
 					for (int j=0; j<classFeatureCounts.length; j++) {
 						classFeatureTotal+=classFeatureCounts[j];
 						printFeatureCounts += classFeatureCounts[j]+", ";
 					}
-					
-					int featureValueIndex = feature.indexOfCategory((String) featureValue.getValue());	
-					
 					Log.d(TAG, printFeatureCounts);
 					Log.d(TAG, "Feature value "+featureValue.getValue().toString()+" index: "+featureValueIndex);
-							
+					*/
+					int featureValueIndex = feature.indexOfCategory((String) featureValue.getValue());	
+					
 					if (d_LaplaceSmoothing){
 						classFeatureProbs[indexOfClassValue]=classFeatureCounts[featureValueIndex]+1/
 								(classFeatureTotal + feature.numberOfCategories());					
@@ -254,14 +272,21 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 						
 					}
 					
-					Log.d(TAG, "calc for: "+ classValue
+					/*Log.d(TAG, "calc for: "+ classValue
 							+" and " + feature.name()
 							+" resulting probability "+normalProbability+" total "+classPosteriors[indexOfClassValue]);
-					
+					*/
 					classPosteriors[indexOfClassValue] *= normalProbability;
 				}
 			}
 		}
+		
+		String outputPosterior="[";
+		for (int i=0; i<classPosteriors.length;i++) {
+			outputPosterior += classPosteriors[i]+",";
+		}
+		Log.d(TAG, "Class posteriors: "+outputPosterior);
+		
 		return classPosteriors;
 	}
 
@@ -274,7 +299,6 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 			double maxAposteriori = 0;
 			int maxAposterioriIndex = -1;
 			for (int i=0; i<classDistribution.length; i++){
-				Log.d(TAG, "Class distribution: "+classDistribution[i]);
 				if (classDistribution[i] > maxAposteriori){
 					maxAposteriori = classDistribution[i];
 					maxAposterioriIndex = i;
