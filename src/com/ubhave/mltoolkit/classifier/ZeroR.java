@@ -76,7 +76,7 @@ public class ZeroR extends Classifier implements OnlineClassifier {
 			int classValueInt = classFeature.indexOfCategory((String) classValue.getValue());		
 			d_classCounts[classValueInt] += 1;
 		} else if (classFeature.getFeatureType() == Feature.NUMERIC) {
-			d_classCounts[0] += (Float) classValue.getValue();
+			d_classCounts[0] += (Double) classValue.getValue();
 			d_classCounts[1] += 1;
 		}
 	}

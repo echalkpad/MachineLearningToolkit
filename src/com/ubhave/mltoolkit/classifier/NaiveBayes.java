@@ -168,8 +168,8 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 			}
 			if (featureValue.getValueType() == Value.NUMERIC_VALUE){
 				classFeatureCounts[0] += 1; // count				
-				classFeatureCounts[1] += (Float)featureValue.getValue(); // value sum
-				classFeatureCounts[2] += Math.pow((Float)featureValue.getValue(),2); // value square sum
+				classFeatureCounts[1] += (Double)featureValue.getValue(); // value sum
+				classFeatureCounts[2] += Math.pow((Double)featureValue.getValue(),2); // value square sum
 				Log.d(TAG, "Update:"+d_signature.getFeatureAtIndex(i).name()
 						+"["+(String) classValue.getValue()+"] = "
 						+"{"+classFeatureCounts[0]+","+classFeatureCounts[1]+","+classFeatureCounts[2]+"}");
@@ -260,12 +260,12 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 					double mean = 0;
 					double stdDev = 0;
 					double normalProbability = 0;
-					double featureValueFloat = (Float)featureValue.getValue();
+					double featureValueDouble = (Double)featureValue.getValue();
 					
 					if (classFeatureCounts[0] > 0) {
 						mean = classFeatureCounts[1]/classFeatureCounts[0];
 						stdDev = Math.sqrt(classFeatureCounts[2] - Math.pow(mean,2));
-						normalProbability = Math.exp(Math.pow(featureValueFloat - mean ,2))/(2*stdDev*Math.sqrt(2*Math.PI));
+						normalProbability = Math.exp(Math.pow(featureValueDouble - mean ,2))/(2*stdDev*Math.sqrt(2*Math.PI));
 						// TODO: if the current value equals the mean the normal probability goes to infinity;
 						// to prevent this we, cap it to 1.0.
 						if (Double.isInfinite(normalProbability)) normalProbability = 1.0;
