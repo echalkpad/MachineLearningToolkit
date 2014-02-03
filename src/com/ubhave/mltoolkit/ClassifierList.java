@@ -50,12 +50,12 @@ public class ClassifierList {
 	
 	private HashMap<String, Classifier> d_namedClassifiers;
 
-	private final Random d_keyGenerator;
+	//private final Random d_keyGenerator;
 	
 	public ClassifierList(){
 		Log.d(TAG, "ClassifierList empty constructor");
 		d_namedClassifiers = new HashMap<String, Classifier>();
-		d_keyGenerator = new Random();	
+		//d_keyGenerator = new Random();	
 	}
 	
 	private static Classifier createClassifier(
