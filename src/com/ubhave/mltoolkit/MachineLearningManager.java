@@ -141,6 +141,12 @@ public class MachineLearningManager {
 		return d_classifiers.getClassifier(a_classifierID);		
 	}
 	
+	public String getJSON() {
+		Gson gson = new Gson();
+		String JSONstring = gson.toJson(d_classifiers);
+		return JSONstring;
+	}
+	
 	public void saveToPersistentExternal(String a_filename) {
 		Gson gson = new Gson();
 		String JSONstring = gson.toJson(d_classifiers);
