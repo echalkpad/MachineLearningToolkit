@@ -55,7 +55,7 @@ public abstract class Classifier {
 	
 	public abstract void train(ArrayList<Instance> instances) throws MLException;
 
-	public abstract Value classify(Instance instance);
+	public abstract Value classify(Instance instance) throws MLException;
 	
 	public abstract void printClassifierInfo();
 	

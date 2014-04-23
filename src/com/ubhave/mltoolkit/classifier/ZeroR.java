@@ -91,7 +91,12 @@ public class ZeroR extends Classifier implements OnlineClassifier {
 	}
 
 	@Override
-	public Value classify(Instance a_instance) {
+	public Value classify(Instance a_instance) throws MLException {
+		
+		if (!d_signature.checkInstanceCompliance(a_instance)){
+			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
+					"Instance is not compatible with the dataset used for classifier construction.");					
+		}
 		
 		if (d_signature.getClassFeature().getFeatureType() == Feature.NOMINAL) {
 			double maxCount = 0;

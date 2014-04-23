@@ -38,7 +38,7 @@ public class Constants {
 	public static final String MIN_INCLUSION_PERCENT = "minInclusionPercent";
 
 	public static final double DEFAULT_MAX_CLUSTER_DISTANCE = 1; // in km if GPS
-	public static final double DEFAULT_MIN_INCLUSION_PERCENT = 50; 
+	public static final double DEFAULT_MIN_INCLUSION_PERCENT = 50.0; 
 	
 	// Naive Bayes
 	public static final String LAPLACE_SMOOTHING = "laplaceSmoothing";

@@ -100,7 +100,7 @@ public class ClassifierList {
 		}
 	}	
 	
-	public synchronized Classifier addClassifier(int a_type, Signature a_signature, ClassifierConfig a_config, String a_name) throws MLException{
+	public synchronized Classifier addClassifier(int a_type, Signature a_signature, ClassifierConfig a_config, String a_name) {
 		Log.d(TAG, "addClassifier");
 		Classifier classifier = createClassifier(a_type, a_signature, a_config);
 		d_namedClassifiers.put(a_name, classifier);

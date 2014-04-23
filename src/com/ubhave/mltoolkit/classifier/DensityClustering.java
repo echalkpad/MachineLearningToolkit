@@ -23,6 +23,7 @@ package com.ubhave.mltoolkit.classifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import android.util.Log;
 
@@ -149,7 +150,9 @@ public class DensityClustering extends Classifier {
 		String curLabel;
 		double curCoordValues[] = new double[d_signature.size()-1];
 		
-		for (Instance curInstance : instances) {
+		for (Iterator<Instance> curIter = instances.iterator(); curIter.hasNext();) {
+		
+			Instance curInstance = curIter.next();
 			
 			if (!d_signature.checkInstanceCompliance(curInstance)){
 				throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
@@ -168,7 +171,9 @@ public class DensityClustering extends Classifier {
 			int total = 0;
     		int totalInside = 0;
     		
-			for (Instance otherInstance : instances) {
+			for (Iterator<Instance> otherIter = instances.iterator(); otherIter.hasNext();) {
+				
+				Instance otherInstance = otherIter.next();
 				
 				if (otherInstance != curInstance) {
 					
@@ -179,26 +184,28 @@ public class DensityClustering extends Classifier {
 					
 					otherLabel = (String) otherInstance.getValueAtIndex(d_signature.getClassIndex()).getValue();
 					
-					if (otherLabel.equals(curInstance)) {
+					if (otherLabel.equals(curLabel)) {
 					
 						for(int i=0; i<d_signature.size()-1; i++) {
 							otherCoordValues[i] = (Double) otherInstance.getValueAtIndex(i).getValue();
 						}
 						
-						if (curLabel.equals(otherLabel)){
-							
-							double distance = distance(curCoordValues, otherCoordValues);
-							
-							total++;
-							if (distance<d_maxDistance) totalInside++;
-						}
+						double distance = distance(curCoordValues, otherCoordValues);
+						
+						total++;
+						
+						if (distance<d_maxDistance) totalInside++;						
 					}
 				}
 			}
 			
-			if (total/(double)totalInside < d_minInclusionPct){
-				instances.remove(curInstance);
-    		}
+			Log.d(TAG, "Points: "+totalInside+"/"+total+" vs "+d_minInclusionPct+"/100");
+			if (total > 0) {
+				if (totalInside/(double)total < (d_minInclusionPct/100.0)){
+					Log.d(TAG, "Remove instance");
+					curIter.remove();					
+	    		}
+			}
 			
 		}
 		// At this point only those instances that are tightly packed are in d_instanceQ
@@ -243,8 +250,13 @@ public class DensityClustering extends Classifier {
 	}
 
 	@Override
-	public Value classify(Instance instance) {
+	public Value classify(Instance instance) throws MLException {
 
+		if (!d_signature.checkInstanceCompliance(instance)){
+			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
+					"Instance is not compatible with the dataset used for classifier construction.");					
+		}
+		
 		// Calculate the centroid that is the closest 
 		double minDistance = Double.MAX_VALUE;
 		

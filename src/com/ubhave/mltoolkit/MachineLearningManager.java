@@ -116,7 +116,7 @@ public class MachineLearningManager {
 		}
 	}
 	
-	public Classifier addClassifier(int a_type, Signature a_signature, ClassifierConfig a_config, String a_name) throws MLException{
+	public Classifier addClassifier(int a_type, Signature a_signature, ClassifierConfig a_config, String a_name) {
 		Log.d(TAG, "addClassifier");
 
 		Classifier cls = d_classifiers.getClassifier(a_name);

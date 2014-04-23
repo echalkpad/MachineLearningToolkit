@@ -190,7 +190,12 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 	}
 	
 	
-	public double[] getDistribution(Instance a_instance) {
+	public double[] getDistribution(Instance a_instance) throws MLException {
+		
+		if (!d_signature.checkInstanceCompliance(a_instance)){
+			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
+					"Instance is not compatible with the dataset used for classifier construction.");					
+		}
 		
 		Feature classFeature = d_signature.getClassFeature(); 
 		ArrayList<String> classValues = classFeature.getValues();
@@ -292,7 +297,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 
 	@Override
-	public Value classify(Instance a_instance) {
+	public Value classify(Instance a_instance) throws MLException {
 		synchronized (d_lock)
 		{
 			double[] classDistribution = getDistribution(a_instance);
