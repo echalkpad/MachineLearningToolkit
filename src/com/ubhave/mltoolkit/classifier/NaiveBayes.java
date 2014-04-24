@@ -221,7 +221,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		}
 		Log.d(TAG, "Class priors: "+outputPrior);
 		
-		for (int i=0; i<a_instance.size(); i++){
+		for (int i=0; i<a_instance.size()-1; i++){
 			Value featureValue = a_instance.getValueAtIndex(i);
 			Feature feature = d_signature.getFeatureAtIndex(i);
 			// for every feature (a specific value of it) we get a prob of each class
@@ -257,14 +257,15 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 							classFeatureProbs[indexOfClassValue]=classFeatureCounts[featureValueIndex]/classFeatureTotal;
 						}
 					}
-					
+					Log.d(TAG, "classFeatureProbs["+indexOfClassValue+"]= "+classFeatureProbs[indexOfClassValue]);
 					classPosteriors[indexOfClassValue] *= classFeatureProbs[indexOfClassValue];
 					
 				} else if (featureValue.getValueType() == Value.NUMERIC_VALUE) {
 					
 					double mean = 0;
 					double stdDev = 0;
-					double normalProbability = 0;
+					// ignore features for which we have no data (those will have normalProb = 1) 
+					double normalProbability = 1; 
 					double featureValueDouble = (Double)featureValue.getValue();
 					
 					if (classFeatureCounts[0] > 0) {
@@ -290,6 +291,8 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 		for (int i=0; i<classPosteriors.length;i++) {
 			outputPosterior += classPosteriors[i]+",";
 		}
+		outputPosterior += "]";
+		
 		Log.d(TAG, "Class posteriors: "+outputPosterior);
 		
 		return classPosteriors;
