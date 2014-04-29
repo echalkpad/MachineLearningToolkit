@@ -36,9 +36,6 @@ import com.ubhave.mltoolkit.utils.MLException;
 import com.ubhave.mltoolkit.utils.Signature;
 import com.ubhave.mltoolkit.utils.Value;
 
-// TODO: check if there is a distinction between the class feature and other features
-// Do we need such a distinction?
-
 /**
  * Naive Bayesian classifier that supports both nominal and numeric attributes.
  * Numeric features are modelled with a Gaussian distribution. 
@@ -104,8 +101,6 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 					// - sum of square values 
 					// so that we can get the normal distribution in the end
 					classFeatureCounts = new double[3];
-				}else{
-					Log.d(TAG, "Empty value. Skipped");
 				}
 				
 				Arrays.fill(classFeatureCounts, 0.0);
@@ -130,7 +125,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 	public void update(Instance a_instance) throws MLException {
 				
-		if (!d_signature.checkInstanceCompliance(a_instance)){
+		if (!d_signature.checkCompliance(a_instance, true)){
 			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 					"Instance is not compatible with the dataset used for classifier construction.");					
 		}
@@ -192,7 +187,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 	
 	public double[] getDistribution(Instance a_instance) throws MLException {
 		
-		if (!d_signature.checkInstanceCompliance(a_instance)){
+		if (!d_signature.checkCompliance(a_instance, false)){
 			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 					"Instance is not compatible with the dataset used for classifier construction.");					
 		}
@@ -214,14 +209,14 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 			
 		}
 		
-		Log.d(TAG, "Class values: "+classValues);
+		//Log.d(TAG, "Class values: "+classValues);
 		String outputPrior="[";
 		for (int i=0; i<classPriors.length;i++) {
 			outputPrior += classPriors[i]+",";
 		}
-		Log.d(TAG, "Class priors: "+outputPrior);
+		//Log.d(TAG, "Class priors: "+outputPrior);
 		
-		for (int i=0; i<a_instance.size()-1; i++){
+		for (int i=0; i<a_instance.size(); i++){
 			Value featureValue = a_instance.getValueAtIndex(i);
 			Feature feature = d_signature.getFeatureAtIndex(i);
 			// for every feature (a specific value of it) we get a prob of each class
@@ -257,7 +252,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 							classFeatureProbs[indexOfClassValue]=classFeatureCounts[featureValueIndex]/classFeatureTotal;
 						}
 					}
-					Log.d(TAG, "classFeatureProbs["+indexOfClassValue+"]= "+classFeatureProbs[indexOfClassValue]);
+					//Log.d(TAG, "classFeatureProbs["+indexOfClassValue+"]= "+classFeatureProbs[indexOfClassValue]);
 					classPosteriors[indexOfClassValue] *= classFeatureProbs[indexOfClassValue];
 					
 				} else if (featureValue.getValueType() == Value.NUMERIC_VALUE) {
@@ -272,7 +267,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 						mean = classFeatureCounts[1]/classFeatureCounts[0];
 						stdDev = Math.sqrt(classFeatureCounts[2] - Math.pow(mean,2));
 						normalProbability = Math.exp(Math.pow(featureValueDouble - mean ,2))/(2*stdDev*Math.sqrt(2*Math.PI));
-						// TODO: if the current value equals the mean the normal probability goes to infinity;
+						// NOTE: if the current value equals the mean the normal probability goes to infinity;
 						// to prevent this we, cap it to 1.0.
 						if (Double.isInfinite(normalProbability)) normalProbability = 1.0;
 						
@@ -292,9 +287,7 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 			outputPosterior += classPosteriors[i]+",";
 		}
 		outputPosterior += "]";
-		
-		Log.d(TAG, "Class posteriors: "+outputPosterior);
-		
+		//Log.d(TAG, "Class posteriors: "+outputPosterior);
 		return classPosteriors;
 	}
 

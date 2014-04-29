@@ -102,15 +102,12 @@ public class DensityClustering extends Classifier {
 		} 
 		// Otherwise Euclidean distance
 		else {
-			double sqrSum = 0;
-			
+			double sqrSum = 0;			
 			for(int i=0; i<a_coordsA.length; i++) {
 				sqrSum += Math.pow(a_coordsA[i] - a_coordsB[i], 2);				
 			}
-			
 			return Math.sqrt(sqrSum);
-		}
-		
+		}		
 	}
 	
 	public DensityClustering(Signature a_signature, ClassifierConfig a_config){
@@ -144,8 +141,8 @@ public class DensityClustering extends Classifier {
 
 	@Override
 	public void train(ArrayList<Instance> instances) throws MLException {
+		//Log.d(TAG, "train with "+instances.size()+" instances");
 		
-		Log.d(TAG, "train with "+instances.size()+" instances");
 		// Remove outliers (density based)
 		String curLabel;
 		double curCoordValues[] = new double[d_signature.size()-1];
@@ -154,7 +151,7 @@ public class DensityClustering extends Classifier {
 		
 			Instance curInstance = curIter.next();
 			
-			if (!d_signature.checkInstanceCompliance(curInstance)){
+			if (!d_signature.checkCompliance(curInstance, true)){
 				throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 						"Instance is not compatible with the dataset used for classifier construction.");					
 			}
@@ -177,7 +174,7 @@ public class DensityClustering extends Classifier {
 				
 				if (otherInstance != curInstance) {
 					
-					if (!d_signature.checkInstanceCompliance(otherInstance)){
+					if (!d_signature.checkCompliance(otherInstance, true)){
 						throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 								"Instance is not compatible with the dataset used for classifier construction.");					
 					}
@@ -199,31 +196,29 @@ public class DensityClustering extends Classifier {
 				}
 			}
 			
-			Log.d(TAG, "Points: "+totalInside+"/"+total+" vs "+d_minInclusionPct+"/100");
+			//Log.d(TAG, "Points: "+totalInside+"/"+total+" vs "+d_minInclusionPct+"/100");
 			if (total > 0) {
 				if (totalInside/(double)total < (d_minInclusionPct/100.0)){
-					Log.d(TAG, "Remove instance");
+					//Log.d(TAG, "Remove instance");
 					curIter.remove();					
 	    		}
 			}
 			
 		}
 		// At this point only those instances that are tightly packed are in d_instanceQ
+		//Log.d(TAG, "Outliers removed. "+instances.size()+" instances left.");
+		
 		// Find cluster centroids
-		
-		Log.d(TAG, "Outliers removed. "+instances.size()+" instances left.");
-		
 		double centroidCoords[];
-		
 		for (Instance curInstance : instances) {
 			
 			curLabel = (String) curInstance.getValueAtIndex(d_signature.getClassIndex()).getValue();
 			centroidCoords = d_centroids.get(curLabel);
 			
-			Log.d(TAG, "Current instance label "+curLabel);
+			//Log.d(TAG, "Current instance label "+curLabel);
 			
 			for(int i=0; i<d_signature.size()-1; i++) {
-				Log.d(TAG, "added coord "+i+ " with value "+(Double) curInstance.getValueAtIndex(i).getValue());
+				//Log.d(TAG, "added coord "+i+ " with value "+(Double) curInstance.getValueAtIndex(i).getValue());
 				centroidCoords[i] += (Double) curInstance.getValueAtIndex(i).getValue();
 			}
 			
@@ -236,7 +231,7 @@ public class DensityClustering extends Classifier {
 			centroidCoords = d_centroids.get(classValue);
 			numTrains = d_numTrains.get(classValue);
 			
-			Log.d(TAG, "Centroid with label "+classValue+" contains " +numTrains+ " points.");
+			//Log.d(TAG, "Centroid with label "+classValue+" contains " +numTrains+ " points.");
 			
 			for (int i=0; i<d_signature.size()-1; i++) {
 				if (numTrains > 0)
@@ -252,7 +247,7 @@ public class DensityClustering extends Classifier {
 	@Override
 	public Value classify(Instance instance) throws MLException {
 
-		if (!d_signature.checkInstanceCompliance(instance)){
+		if (!d_signature.checkCompliance(instance, false)){
 			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 					"Instance is not compatible with the dataset used for classifier construction.");					
 		}

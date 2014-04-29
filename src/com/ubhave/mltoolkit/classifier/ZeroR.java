@@ -63,7 +63,7 @@ public class ZeroR extends Classifier implements OnlineClassifier {
 	@Override
 	public void update(Instance a_instance) throws MLException {
 		
-		if (!d_signature.checkInstanceCompliance(a_instance)){
+		if (!d_signature.checkCompliance(a_instance, true)){
 			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 					"Instance is not compatible with the dataset used for classifier construction.");					
 		}
@@ -93,7 +93,7 @@ public class ZeroR extends Classifier implements OnlineClassifier {
 	@Override
 	public Value classify(Instance a_instance) throws MLException {
 		
-		if (!d_signature.checkInstanceCompliance(a_instance)){
+		if (!d_signature.checkCompliance(a_instance, false)){
 			throw new MLException(MLException.INCOMPATIBLE_INSTANCE, 
 					"Instance is not compatible with the dataset used for classifier construction.");					
 		}

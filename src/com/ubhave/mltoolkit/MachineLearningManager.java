@@ -124,11 +124,11 @@ public class MachineLearningManager {
 		// TODO: Expose classifier properties so that we can check 
 		// if the existing classifier is the same as the one we require.
 		if (cls != null) {
-			Log.d(TAG, "return existing classifier");
+			//Log.d(TAG, "return existing classifier");
 			return cls;
 		}
 		//throw new MLException(MLException.CLASSIFIER_EXISTS, "Classifier "+a_name+" already exists.");
-		Log.d(TAG, "return brand new classifier");
+		//Log.d(TAG, "return brand new classifier");
 		return d_classifiers.addClassifier(a_type, a_signature, a_config, a_name);
 	}
 	
@@ -179,17 +179,13 @@ public class MachineLearningManager {
 			osw.flush();
 			osw.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public ClassifierList loadFromExternalPersistent(String a_filename) {
-		
-		Log.d(TAG, "loadFromExternalPersistent");
 		
 		StringBuilder JSONstring = new StringBuilder();
 		
@@ -206,7 +202,6 @@ public class MachineLearningManager {
 			}
 			br.close();			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -219,8 +214,6 @@ public class MachineLearningManager {
 	}
 	
 	public ClassifierList loadFromPersistent() {
-
-		Log.d(TAG, "loadFromPersistent");
 		
 		StringBuilder JSONstring = new StringBuilder();
 		
@@ -231,7 +224,6 @@ public class MachineLearningManager {
 			String line;
 			while ((line = br.readLine()) != null) {
 				JSONstring.append(line);
-				Log.d(TAG, "Read "+line);
 			}
 			br.close();			
 		} catch (IOException e) {
@@ -257,12 +249,10 @@ public class MachineLearningManager {
 		}
 		
 		public Classifier deserialize(JsonElement a_elem, Type a_type, JsonDeserializationContext a_context) throws JsonParseException {
-			Log.d(TAG, "Deserialize a classifier");
 			Classifier result = null;
 			
 			JsonObject object = a_elem.getAsJsonObject();
 			int type = object.get("d_type").getAsInt();
-			Log.d(TAG, "Classifier type "+type);
 			switch(type){
 				case Constants.TYPE_NAIVE_BAYES:
 					result = gson.fromJson(a_elem, NaiveBayes.class);					

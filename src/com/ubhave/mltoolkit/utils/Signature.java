@@ -82,11 +82,17 @@ public class Signature {
 		return d_features.size();
 	}
 	
-	public boolean checkInstanceCompliance(Instance a_instance) {
+	public boolean checkCompliance(Instance a_instance, boolean a_training) {
 		Log.d(TAG, "checkInstanceCompliance");
-		Log.d(TAG, "size instance: "+a_instance.size()+" size features: "+this.getFeatures().size());
+		int checkSize = a_instance.size();
 		
-		if (a_instance.size() != this.getFeatures().size()){
+		// Instances that are used for training should have the exact same features as the signature.
+		// Those that are about to be classified, should have one feature less -- the class feature.
+		if (!a_training) {
+			checkSize++;
+		}
+		
+		if (checkSize != this.getFeatures().size()){
 			return false;
 		}
 		
