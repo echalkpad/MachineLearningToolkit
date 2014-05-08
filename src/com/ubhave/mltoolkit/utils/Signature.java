@@ -93,6 +93,10 @@ public class Signature {
 		}
 		
 		if (checkSize != this.getFeatures().size()){
+			Log.d(TAG, "Expected number of features: "+this.getFeatures().size()+" got "+checkSize);
+			for (int i=0; i<a_instance.size(); i++){
+				Log.d(TAG, "instance value "+a_instance.getValueAtIndex(i).getValue());				
+			}
 			return false;
 		}
 		
