@@ -283,8 +283,10 @@ public class DensityClustering extends Classifier {
 
 	@Override
 	public void printClassifierInfo() {
-		Log.d(TAG, "Classifer type: "+d_type);
-		Log.d(TAG, "Signature: "+d_signature.toString());
+		StringBuilder builder = new StringBuilder();
+		builder.append("Classifer type: "+d_type+"\n");
+		builder.append("Signature: "+d_signature.toString()+"\n");
+		builder.append("Centroids:\n");
 		for(String classValue : d_centroids.keySet()) {
 			double centroidCoords[] = d_centroids.get(classValue);
 			String coords = "[";
@@ -292,7 +294,8 @@ public class DensityClustering extends Classifier {
 				coords += (centroidCoords[i]+",");
 			}
 			coords += (centroidCoords[centroidCoords.length-1]+"]");
-			Log.d(TAG, classValue+"\t"+coords+"\t"+d_numTrains.get(classValue));			
+			builder.append(classValue+"("+d_numTrains.get(classValue)+")\t"+coords+"\n");			
 		}		
+		Log.d(TAG, builder.toString());
 	}
 }

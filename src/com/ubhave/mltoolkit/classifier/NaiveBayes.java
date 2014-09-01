@@ -319,9 +319,28 @@ public class NaiveBayes extends Classifier implements OnlineClassifier {
 
 	@Override
 	public void printClassifierInfo() {
-		Log.d(TAG, "Classifer type: "+d_type);
-		Log.d(TAG, "Signature: "+d_signature.toString());
-		Log.d(TAG, "Class counts: "+d_classCounts);
-		Log.d(TAG, "Value counts: "+d_valueCounts);
+		StringBuilder builder = new StringBuilder();
+		builder.append("Classifier type: "+d_type+"\n");
+		builder.append("Signature: "+d_signature.toString()+"\n");
+		builder.append("Class feature value counts: ");
+		for (int i=0; i<d_signature.getClassFeature().getValues().size(); i++){
+			
+			builder.append("["+d_signature.getClassFeature().getValues().get(i)+":"+d_classCounts[i]+"]");
+		}
+		builder.append("\nOther feature value counts: \n");
+		for (String featureName : d_valueCounts.keySet()){
+			builder.append(featureName+" ");
+			HashMap<String,double[]> counts = d_valueCounts.get(featureName);
+			for (String classFeatureValue : counts.keySet()) {
+				builder.append("["+classFeatureValue+":");
+				double[] values = counts.get(classFeatureValue);
+				for (int i=0; i<values.length; i++) {
+					builder.append(values[i]+",");
+				}
+				builder.append("],");
+			}
+			builder.append("\n");
+		}
+		Log.d(TAG, builder.toString());
 	}
 }

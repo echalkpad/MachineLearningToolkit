@@ -40,18 +40,13 @@ public class Signature {
 	private static final String TAG = "Signature";
 	
 	private ArrayList<Feature> d_features;
-	
-    private HashMap<String, Feature> d_namesFeatures;
-    
+	   
     private int d_classIndex;		
 
 	public Signature(ArrayList<Feature> a_features, int a_classIndex){
-		d_namesFeatures = new HashMap<String, Feature>();
 		d_features = a_features;
 		d_classIndex = a_classIndex;
-		for (Feature f : a_features) {
-			d_namesFeatures.put(f.name(), f);
-		}
+
 	}
 	
 	public Signature(ArrayList<Feature> a_features){
@@ -113,7 +108,10 @@ public class Signature {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		StringBuilder builder = new StringBuilder();
+		for (Feature f : d_features){
+			builder.append("["+f.name()+"("+f.getFeatureType()+")"+"], ");
+		}
+		return builder.toString();
 	}
 }
